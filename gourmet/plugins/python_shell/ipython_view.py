@@ -19,6 +19,7 @@ import sys
 import os
 import pango
 from StringIO import StringIO
+from functools import reduce
 
 try:
   import IPython
