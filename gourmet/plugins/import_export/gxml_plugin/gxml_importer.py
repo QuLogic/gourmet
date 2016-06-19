@@ -96,7 +96,7 @@ class RecHandler (xml_importer.RecHandler):
             self.mixed += self.elbuf
             # special unescaping of our grand little tags
             for (eop,op,ecl,cl) in [('&lt;%s&gt;'%t,'<%s>'%t,'&lt;/%s&gt;'%t,'</%s>'%t)
-                                    for t in 'b','i','u']:
+                                    for t in ('b', 'i', 'u')]:
                 self.mixed=self.mixed.replace(eop,op)
                 self.mixed=self.mixed.replace(ecl,cl)
             self.rec[name]=self.mixed
