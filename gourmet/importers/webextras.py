@@ -78,7 +78,7 @@ def read_socket_w_progress (sock, suspendableThread=None, message=None):
 
 def get_url (url, suspendableThread):
     """Return data from URL, possibly displaying progress."""
-    if type(url)==str:
+    if isinstance(url, str):
         socket.setdefaulttimeout(URLOPEN_SOCKET_TIMEOUT)
         sock = urllib.urlopen(url)
         socket.setdefaulttimeout(DEFAULT_SOCKET_TIMEOUT)

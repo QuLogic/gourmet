@@ -74,7 +74,7 @@ class SpecialAction:
             c.set_sensitive(self.prev_states[n])
         if self.initially_hidden==True:
             for w in self.highlight_widgets: w.hide()
-        if type(self.initially_hidden)==list:
+        if isinstance(self.initially_hidden, list):
             for w in self.initially_hidden: w.hide()
         for c in self.hide_on_highlight:
             c.show()
@@ -627,7 +627,8 @@ class NutritionInfoDruid (gobject.GObject):
     def apply_custom (self, *args):
         nutinfo = self.nutrition_info.copy()
         for k,v in nutinfo.items():
-            if type(v)==int or type(v)==float: nutinfo[k]=v*self.custom_factor
+            if isinstance(v, (int, float)):
+                nutinfo[k] = v * self.custom_factor
             # Special case fat, which is listed as one item but is in
             # fact a combination of 3. We'll have to fudge the info
             # about mono- v. poly- unsaturated fats.

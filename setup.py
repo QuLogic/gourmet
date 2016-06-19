@@ -10,7 +10,7 @@ import os.path
 import os
 import fileinput
 import string
-from types import StringType, ListType, TupleType
+from types import StringType
 
 from distutils.command.build_py import build_py as _build_py
 from distutils.command.build_scripts import build_scripts as _build_scripts
@@ -33,9 +33,9 @@ class build_py(_build_py):
     def build_module (self, module, module_file, package):
         _build_py.build_module(self, module, module_file, package)
 
-        if type(package) is StringType:
+        if isinstance(package, StringType):
             package = string.split(package, '.')
-        elif type(package) not in (ListType, TupleType):
+        elif not isinstance(package, (list, tuple)):
             raise TypeError, \
                   "'package' must be a string (dot-separated), list, or tuple"
 

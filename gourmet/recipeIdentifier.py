@@ -91,8 +91,9 @@ def format_ing_text (ing_alist,rd,conv=None):
             if a: istring.append(a)
             if u: istring.append(u)
             if i.item: istring.append(i.item)
-            if (type(i.optional)!=str and i.optional) or i.optional=='yes': 
-                    istring.append(_('(Optional)'))
+            if ((not isinstance(i.optional, str) and i.optional) or
+                    i.optional == 'yes'):
+                istring.append(_('(Optional)'))
             if i.refid: istring.append('=>%s'%i.refid)
             if i.ingkey: istring.append('key=%s'%i.ingkey)
             strings.append(xml.sax.saxutils.escape(' '.join(istring)))
@@ -202,10 +203,9 @@ def merge_recipes (rd, recs):
             elif not value:
                 value = v
             elif (v != value):
-                if ((type(v) in types.StringTypes
-                     and
-                     type(value) in types.StringTypes)
-                    and v.lower()==value.lower()):
+                if ((isinstance(v, types.StringTypes) and
+                     isinstance(value, types.StringTypes))
+                        and v.lower() == value.lower()):
                     continue
                 else:
                     conflict = True

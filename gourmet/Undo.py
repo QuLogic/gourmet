@@ -436,7 +436,7 @@ class UndoHistoryList (list):
                 debug('Sensitizing "reapply" widgets',0)
                 self.set_sensitive(self.reapply_widget,True)
                 if self[-1].reapply_name:
-                    if type(self.reapply_widget)==gtk.MenuItem:
+                    if isinstance(self.reapply_widget, gtk.MenuItem):
                         alabel = self.reapply_widget.get_children()[0]
                         alabel.set_text_with_mnemonic(self[-1].reapply_name)
                         alabel.set_use_markup(True)

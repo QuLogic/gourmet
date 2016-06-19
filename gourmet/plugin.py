@@ -491,7 +491,7 @@ class RecEditorModule (UIModule, gobject.GObject, object):
                 orig_value = ', '.join(self.rg.rd.get_cats(self.current_rec))
             else:
                 orig_value = getattr(self.current_rec,prop)
-            if type(orig_value) in types.StringTypes:
+            if isinstance(orig_value, types.StringTypes):
                 val = val.strip(); orig_value=orig_value.strip()
             else:
                 if not val: val = 0

@@ -47,7 +47,9 @@ class TestFoodnetworkPlugin(unittest.TestCase):
         result = parser.preparsed_elements
 
         ingredients = [r for r in result if r[1] == "ingredients"][0][0]
-        ingredients = [i for i in ingredients if type(i) == BeautifulSoup.Tag]
+        ingredients = [i
+                       for i in ingredients
+                       if isinstance(i, BeautifulSoup.Tag)]
         name = [r for r in result if r[1] == "title"][0][0][0].text
         instructions = [r for r in result if r[1] == "recipe"][0][0].text
 

@@ -114,14 +114,14 @@ class ModalDialog (gtk.Dialog):
             self.vbox.add(self.expander)
             
     def _add_expander_item (self, item):
-        if type(item)==type(""):
+        if isinstance(item, str):
             l=gtk.Label(item)
             l.set_selectable(True)
             l.set_line_wrap_mode(pango.WRAP_WORD)
             self.expander_vbox.pack_start(l,
                                           expand=False,
                                           fill=False)
-        elif type(item)==[] or type(item)==():
+        elif isinstance(item, (list, tuple)):
             map(self._add_expander_item,item)
         else:
             self.expander_vbox.pack_start(item)
@@ -321,10 +321,11 @@ class OptionDialog (ModalDialog):
         self.menu = gtk.Menu()
         # set the default value to the first item
         first = options[0]
-        if type(first)==type(""): self.ret=first
+        if isinstance(first, str):
+            self.ret = first
         else: self.ret=first[1]
         for o in options:
-            if type(o)==type(""):
+            if isinstance(o, str):
                 l=o
                 v=o
             else:
@@ -661,7 +662,7 @@ class SimpleFaqDialog (ModalDialog):
         We parse index lines according to self.INDEX_MATCHER
         """
         CLOSE=False
-        if type(infile)==str:
+        if isinstance(infile, str):
             infile=open(infile)            
             CLOSE=True
         self.index_lines = []

@@ -436,7 +436,7 @@ class NutritionLabel (gtk.VBox, gobject.GObject):
         """
         for itm in self.nutrition_display_info:
             props = itm['props']
-            if type(props)==str:
+            if isinstance(props, str):
                 rawval = getattr(self.nutinfo,props) or 0
             else:
                 # sum a list of properties

@@ -244,9 +244,9 @@ class PdfWriter:
                         top_margin=inch,
                         bottom_margin=inch,
                         base_font_size=10):
-        if type(mode)!=tuple:
+        if not isinstance(mode, tuple):
             raise Exception("What is this mode! %s" % str(mode))
-        if type(pagesize) in types.StringTypes:
+        if isinstance(pagesize, types.StringTypes):
             self.pagesize = getattr(pagesizes,pagemode)(getattr(pagesizes,pagesize))
         else:
             self.pagesize = getattr(pagesizes,pagemode)(pagesize)
@@ -405,7 +405,7 @@ class PdfExporter (exporter.exporter_mult, PdfWriter):
                   **kwargs):
         self.all_recipes = all_recipes
         PdfWriter.__init__(self)
-        if type(out) in types.StringTypes:
+        if isinstance(out, types.StringTypes):
             self.out = file(out,'wb')
         else:
             self.out = out
@@ -537,7 +537,7 @@ class PdfExporter (exporter.exporter_mult, PdfWriter):
         """Make a pretty representation of our rating.
         """
         try:
-            assert(type(val)==int)
+            assert(isinstance(val, int))
         except:
             raise TypeError("Rating %s is not an integer"%val)
         i = FiveStars(10, filled=(val/2.0)) # 12 point
@@ -661,7 +661,7 @@ class PdfExporterMultiDoc (exporter.ExporterMultirec, PdfWriter):
     def __init__ (self, rd, recipes, out, conv=None, pdf_args=DEFAULT_PDF_ARGS,
                   **kwargs):
         PdfWriter.__init__(self)
-        if type(out) in types.StringTypes:
+        if isinstance(out, types.StringTypes):
             out = file(out,'wb')
         self.setup_document(out,**pdf_args)
         self.output_file = out

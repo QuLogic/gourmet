@@ -97,7 +97,7 @@ class rec_to_mcb (XmlExporter):
         
     def write_ing (self, amount=1, unit=None, item=None, key=None, optional=False):
         ing_txt=''
-        if type(amount)==type(1.0) or type(amount)==type(1):
+        if isinstance(amount, (float, int)):
             amount = convert.float_to_frac(amount)
         ing_txt = ing_txt + amount
         if unit:
@@ -126,7 +126,7 @@ class recipe_table_to_xml (exporter.ExporterMultirec, XmlExporter):
         
         self.outputfilename = ''
         
-        if type(out) is file:
+        if isinstance(out, file):
             self.out=out
             self.outputfilename=str(out.name)
         else:

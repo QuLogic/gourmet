@@ -58,11 +58,11 @@ def fix_colnames (dict, *tables):
 def make_simple_select_arg (criteria,*tables):
     args = []
     for k,v in fix_colnames(criteria,*tables).items():
-        if type(v)==str:
+        if isinstance(v, str):
             v = unicode(v)
-        if type(v)==tuple:
+        if isinstance(v, tuple):
             operator,value = v
-            if type(value)==str:
+            if isinstance(value, str):
                 value = unicode(value)
             if operator=='in':
                 args.append(k.in_(value))
@@ -795,7 +795,7 @@ class RecData (Pluggable):
     def __get_joins (self, searches):
         joins = []
         for s in searches:
-            if type(s)==tuple:
+            if isinstance(s, tuple):
                 joins.append(self.__get_joins(s[0]))
             else:
                 if s['column'] == 'category':
@@ -808,13 +808,14 @@ class RecData (Pluggable):
         return joins
 
     def get_criteria (self,crit):
-        if type(crit)==tuple:
+        if isinstance(crit, tuple):
             criteria,logic = crit
             if logic=='and':
                 return and_(*[self.get_criteria(c) for c in criteria])
             elif logic=='or':
                 return or_(*[self.get_criteria(c) for c in criteria])
-        elif type(crit)!=dict: raise TypeError
+        elif not isinstance(crit, dict):
+            raise TypeError
         else:
             #join_crit = None # if we need to add an extra arg for a join
             if crit['column']=='category':
@@ -839,8 +840,9 @@ class RecData (Pluggable):
                 subtable = None
                 col = getattr(self.recipe_table.c,crit['column'])
             # Make sure we're using unicode!
-            if (type(crit.get('search',u'')) != unicode
-                and type(crit.get('search',u'')) in types.StringTypes):
+            if (not isinstance(crit.get('search', u''), unicode)
+                    and isinstance(crit.get('search', u''),
+                                   types.StringTypes)):
                 crit['search'] = unicode(crit['search'])
             if crit.get('operator','LIKE')=='LIKE':
                 retval = (col.like(crit['search']))
@@ -941,7 +943,7 @@ class RecData (Pluggable):
         try:
             to_del = []
             for k in new_values_dic:
-                if type(k) != str:
+                if not isinstance(k, str):
                     to_del.append(k)
             for k in to_del:
                 v = new_values_dic[k]
@@ -1271,7 +1273,7 @@ class RecData (Pluggable):
                       type(v))
             raise
         else:
-            if type(ret)==int:
+            if isinstance(ret, int):
                 ID = ret
                 ret = self.get_rec(ID) 
             else:
@@ -1400,7 +1402,7 @@ class RecData (Pluggable):
 
     def _force_unicode (self, dic):
        for k,v in dic.items():
-            if type(v)==str and k not in ['image','thumb']:
+            if isinstance(v, str) and k not in ['image', 'thumb']:
                 # force unicode...
                 dic[k]=unicode(v) 
                 
@@ -1491,7 +1493,8 @@ class RecData (Pluggable):
 
     def delete_rec (self, rec):
         """Delete recipe object rec from our database."""
-        if type(rec)!=int: rec=rec.id
+        if not isinstance(rec, int):
+            rec = rec.id
         debug('deleting recipe ID %s'%rec,0)
         self.delete_by_criteria(self.recipe_table,{'id':rec})
         self.delete_by_criteria(self.categories_table,{'recipe_id':rec})
@@ -1558,7 +1561,7 @@ class RecData (Pluggable):
         final_alist = []
         last_g = -1
         for g,ii in alist:
-            if type(g)==int:
+            if isinstance(g, int):
                 if last_g == None:
                     final_alist[-1][1].extend(ii)
                 else:
@@ -1618,7 +1621,8 @@ class RecData (Pluggable):
         amt = self.get_amount(ing,mult)
         unit = ing.unit
         ramount = None
-        if type(amt)==tuple: amt,ramount = amt
+        if isinstance(amt, tuple):
+            amt, ramount = amt
         if adjust_units or preferred_unit_groups:
             if not conv:
                 conv = convert.get_converter()
@@ -1660,10 +1664,10 @@ class RecData (Pluggable):
             approx = defaults.unit_rounding_guide.get(unit,0.01)
         else:
             approx = 0.01
-        if type(amt)==tuple:
+        if isinstance(amt, tuple):
             return "%s-%s"%(convert.float_to_frac(amt[0],fractions=fractions,approx=approx).strip(),
                             convert.float_to_frac(amt[1],fractions=fractions,approx=approx).strip())
-        elif type(amt) in (float,int):
+        elif isinstance(amt, (float, int)):
             return convert.float_to_frac(amt,fractions=fractions,approx=approx)
         else: return ""
 
@@ -1677,7 +1681,7 @@ class RecData (Pluggable):
         self.AMT_MODE_HIGH means we take the high number.
         """
         amt = self.get_amount(ing)
-        if type(amt) in [float, int, type(None)]:
+        if amt is None or isinstance(amt, (float, int)):
             return amt
         else:
             # otherwise we do our magic
@@ -1694,8 +1698,10 @@ class RecData (Pluggable):
     def add_ing_to_keydic (self, item, key):
         # print('add ', item, key, 'to keydic')
         # Make sure we have unicode...
-        if type(item)==str: item = unicode(item)
-        if type(key)==str: key = unicode(key)
+        if isinstance(item, str):
+            item = unicode(item)
+        if isinstance(key, str):
+            key = unicode(key)
         if not item or not key: return
         else:
             if item: item = unicode(item)
@@ -1851,9 +1857,9 @@ class RecipeManager (RecData):
         """Handed a string, we search for keys that could match
         the ingredient."""
         result=self.km.look_for_key(ing)
-        if type(result)==type(""):
+        if isinstance(result, str):
             return [result]
-        elif type(result)==type([]):
+        elif isinstance(result, list):
             # look_for contains an alist of sorts... we just want the first
             # item of every cell.
             if len(result)>0 and result[0][1]>0.8:
@@ -2051,9 +2057,9 @@ class dbDic:
         dics = []
         for k in d:
             store_v = d[k]
-            if type(store_v) in types.StringTypes:
+            if isinstance(store_v, types.StringTypes):
                 store_v = unicode(store_v)
-            if type(k) in types.StringTypes:
+            if isinstance(k, types.StringTypes):
                 k = unicode(k)
             dics.append({self.kp:k,self.vp:store_v})
         self.vw.insert().execute(*dics)

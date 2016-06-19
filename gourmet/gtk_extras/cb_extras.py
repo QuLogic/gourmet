@@ -71,16 +71,16 @@ class setup_typeahead:
         if not newstr: return
         self.str += newstr
         match=self.match_string_in_combo(self.str)
-        if type(match) == type(0):
+        if isinstance(match, int):
             self.cb.set_active(match)
         ## otherwise, perhaps they didn't mean to combine strings
         else:
             self.str = ""
             match=self.match_string_in_combo(newstr)
-            if type(match) == type(0):
+            if isinstance(match, int):
                 self.cb.set_active(match)
                 self.string = newstr
-        if type(match)==type(0): 
+        if isinstance(match, int):
             if self.last_timeout: gobject.source_remove(self.last_timeout)
             self.last_timeout=gobject.timeout_add(self.typeahead_timeout, self.reset_str)
 
@@ -145,10 +145,10 @@ def set_model_from_list (cb, list, expand=True):
     for l in list:
         model.append([l])
     cb.set_model(model)
-    if type(cb) == gtk.ComboBoxEntry:
+    if isinstance(cb, gtk.ComboBoxEntry):
         cb.set_text_column(0)        
         setup_completion(cb)
-    elif type(cb) == gtk.ComboBox:
+    elif isinstance(cb, gtk.ComboBox):
         cb.clear()
         cell = gtk.CellRendererText()
         cb.pack_start(cell, expand=expand)

@@ -621,10 +621,11 @@ def set_accel_paths (ui, widgets, base='<main>'):
     paths based on it."""
     for s in widgets:
         w=ui.get_object(s)
-        if type(w) == gtk.MenuItem: set_path_for_menuitem(w)
+        if isinstance(w, gtk.MenuItem):
+            set_path_for_menuitem(w)
         else:
             for c in w.get_children():
-                if type(c) == gtk.MenuItem:
+                if isinstance(c, gtk.MenuItem):
                     set_path_for_menuitem(c,base)
                 else:
                     debug("Can't handle %s"%c,1)

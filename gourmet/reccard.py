@@ -1748,7 +1748,8 @@ class IngredientController (plugin_loader.Pluggable):
                     fallback_on_append=True):
         iter = None
         if group_iter and not prev_iter:
-            if type(self.imodel.get_value(group_iter, 0)) not in types.StringTypes:
+            if not isinstance(self.imodel.get_value(group_iter, 0),
+                              types.StringTypes):
                 prev_iter = group_iter
                 print('fix this old code!')
                 import traceback; traceback.print_stack()
@@ -1967,9 +1968,9 @@ class IngredientController (plugin_loader.Pluggable):
         for rowdic,prev_iter,ing_obj,children,expanded in rowdicts_and_iters:
             prev_iter = self.get_iter_from_persistent_ref(prev_iter)
             # If ing_obj is a string, then we are a group
-            if ing_obj and type(ing_obj) in types.StringTypes:
+            if ing_obj and isinstance(ing_obj, types.StringTypes):
                 itr = self.add_group(rowdic['amount'],prev_iter,fallback_on_append=False)
-            elif type(ing_obj) == int or not ing_obj:        
+            elif isinstance(ing_obj, int) or not ing_obj:
                 itr = self.add_ingredient_from_kwargs(prev_iter=prev_iter,
                                                       fallback_on_append=False,
                                                       placeholder=ing_obj,
@@ -1994,7 +1995,8 @@ class IngredientController (plugin_loader.Pluggable):
                         first = False
                     else:
                         gi = None    
-                    if io and type(io) not in [str,unicode,int] and not isinstance(io,RecRef):
+                    if (io and not isinstance(io, (str, unicode, int)) and
+                            not isinstance(io, RecRef)):
                         itr = self.add_ingredient(io,
                                                   group_iter=gi,
                                                   prev_iter=pi,
@@ -2094,7 +2096,7 @@ class IngredientController (plugin_loader.Pluggable):
         def commit_iter (iter, pos, group=None):
             ing = self.imodel.get_value(iter,0)
             # If ingredient is a string, than this is a group
-            if type(ing) in [str,unicode]:
+            if isinstance(ing, (str, unicode)):
                 group = self.imodel.get_value(iter,1)
                 i = self.imodel.iter_children(iter)
                 while i:
@@ -2121,7 +2123,7 @@ class IngredientController (plugin_loader.Pluggable):
                 if isinstance(ing,RecRef):
                     d['refid'] = ing.refid
                 # If we are a real, old ingredient
-                if type(ing) != int and not isinstance(ing,RecRef):
+                if not isinstance(ing, (int, RecRef)):
                     for att in ['amount','unit','item','ingkey','position','inggroup','optional']:
                         # Remove all unchanged attrs from dict...
                         if hasattr(d,att):
@@ -2352,7 +2354,7 @@ class IngredientTreeUI:
         iter=store.get_iter(path)
         val = store.get_value(iter,colnum)
         obj = store.get_value(iter,0)
-        if type(obj) in types.StringTypes and obj.find('GROUP')==0:
+        if isinstance(obj, types.StringTypes) and obj.find('GROUP') == 0:
             print('Sorry, whole groups cannot be toggled to "optional"')
             return
         newval = not val
@@ -2389,7 +2391,7 @@ class IngredientTreeUI:
         iter = store.get_iter(path)
         ing=store.get_value(iter,0)
         d = {}
-        if type(ing) in [str,unicode]:
+        if isinstance(ing, (str, unicode)):
             debug('Changing group to %s'%text,2)
             self.change_group(iter, text)
             return
@@ -2424,8 +2426,7 @@ class IngredientTreeUI:
             path, position = drop_info
             dref = self.ingController.get_persistent_ref_from_path(path)
             dest_ing=mod.get_value(mod.get_iter(path),0)
-            if type(dest_ing) in [str,unicode]: group=True
-            else: group=False
+            group = isinstance(dest_ing, (str, unicode))
         else:
             dref = None
             group = False
@@ -2609,7 +2610,8 @@ class IngredientTreeUI:
             # default behavior (put last)
             group_iter = None
             prev_iter = None
-        elif type(self.ingController.imodel.get_value(selected_iter,0)) in types.StringTypes:
+        elif isinstance(self.ingController.imodel.get_value(selected_iter, 0),
+                        types.StringTypes):
             # if we are a group
             group_iter = selected_iter
             prev_iter = None
@@ -2627,7 +2629,7 @@ class IngredientTreeUI:
         key=ingdict.get('ingkey',None)
         old_unit=ingdict.get('unit',None)
         old_amt=ingdict.get('amount',None)
-        if type(old_amt)==str:
+        if isinstance(old_amt, str):
             old_amt = convert.frac_to_float(old_amt)
         density=None
         conversion = self.rg.conv.converter(old_unit,new_unit,key)

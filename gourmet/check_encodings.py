@@ -29,7 +29,7 @@ class CheckEncoding:
         if get_prefs().get('utf-16',False):
             self.encodings.extend(['utf_16','utf_16_le','utf_16_be'])
         if encodings: self.encodings = encodings
-        if type(file)==str:
+        if isinstance(file, str):
             file = open(file,'r')
         self.txt = file.read()
         file.close()
@@ -231,7 +231,7 @@ class EncodingDialog (de.OptionDialog):
         for linenum, l in enumerate(enc1.splitlines()):
             other_lines = [len(e)>linenum and e[linenum] for e in enc_rest]
             # Remove any Falses returned by above 
-            other_lines = filter(lambda x: type(x) != bool, other_lines)
+            other_lines = filter(lambda x: not isinstance(x, bool), other_lines)
             if False in [l==ol for ol in other_lines]:
                 ranges = []
                 for chnum,ch in enumerate(l):

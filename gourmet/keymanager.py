@@ -247,7 +247,7 @@ class KeyManager:
         debug("Start remove_verbs",10)
         t=TimeAction('remove_verbs',0)
         stringp=True
-        if type(words)==type([]):
+        if isinstance(words, list):
             stringp=False
             words = string.join(words," ")
         words = words.split(';')[0] #we ignore everything after semicolon

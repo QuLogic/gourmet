@@ -177,7 +177,7 @@ def test_undo_save_sensitivity (rc):
                          ]:
         if VERBOSE:
             print('TESTING ', widget)
-        if type(value)==int:
+        if isinstance(value, int):
             orig_value = rc.rw[widget].get_value()
             rc.rw[widget].set_value(value)
             get_method = rc.rw[widget].get_value
@@ -209,7 +209,8 @@ def test_undo_save_sensitivity (rc):
         rc.undo.emit('activate')
         while gtk.events_pending():
             gtk.main_iteration()
-        if orig_value and type(value)!=int: rc.undo.emit('activate') # Blank text, then fill it
+        if orig_value and not isinstance(value, int):
+            rc.undo.emit('activate')  # Blank text, then fill it
         assert_with_message(
             lambda : get_method()==orig_value,
             'Value of %s set to %s after Undo'%(widget,orig_value)
@@ -221,7 +222,7 @@ def test_undo_save_sensitivity (rc):
         if VERBOSE:
             print("-- Hitting 'REDO'")
         rc.redo.emit('activate')
-        if orig_value and type(value)!=int:
+        if orig_value and not isinstance(value, int):
             if VERBOSE:
                 print("(Hitting redo a second time for text...)")
             rc.redo.emit('activate') # Blank text, then fill it        
@@ -235,7 +236,7 @@ def test_undo_save_sensitivity (rc):
                             'Save sensitized after setting %s via REDO'%widget)
         print('-- Hitting UNDO again')
         rc.undo.emit('activate')
-        if orig_value and type(value)!=int:
+        if orig_value and not isinstance(value, int):
             if VERBOSE:
                 print('(Hitting UNDO a second time for text)')
             rc.undo.emit('activate') # Blank text, then fill it
