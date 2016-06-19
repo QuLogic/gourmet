@@ -397,7 +397,7 @@ class NutritionInfo:
         else:
             # somehow this magically gets us standard
             # attribute handling...
-            raise AttributeError, attr
+            raise AttributeError(attr)
 
     def __add__ (self, obj):
         if isinstance(obj,NutritionInfo):
@@ -475,7 +475,7 @@ class NutritionVapor (NutritionInfo):
         if attr[0]!='_':
             return 0
         else:
-            raise AttributeError,attr
+            raise AttributeError(attr)
 
     def __repr__ (self):
         return '<NutritionVapor %s>'%self.__key__
@@ -513,7 +513,7 @@ class NutritionInfoList (list, NutritionInfo):
         else:
             # somehow this magically gets us standard
             # attribute handling...
-            raise AttributeError, attr
+            raise AttributeError(attr)
 
     def _reset (self):
         """See if we can turn any of our vapor into matter."""

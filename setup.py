@@ -36,8 +36,8 @@ class build_py(_build_py):
         if isinstance(package, StringType):
             package = string.split(package, '.')
         elif not isinstance(package, (list, tuple)):
-            raise TypeError, \
-                  "'package' must be a string (dot-separated), list, or tuple"
+            raise TypeError(
+                "'package' must be a string (dot-separated), list, or tuple")
 
         if ( module == 'settings' and len(package) == 1
              and package[0] == 'gourmet'
