@@ -532,7 +532,7 @@ class MultipleUndoLists:
 
     def get_history (self):
         hid=self.get_current_id()
-        if self.histories.has_key(hid):
+        if hid in self.histories:
             #debug('Returning history %s for id %s'%([repr(i) for i in self.histories[hid]],hid),0)
             return self.histories[hid]
         else:

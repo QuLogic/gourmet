@@ -652,7 +652,7 @@ VOL_TO_MASS_TABLE = {
     ("l", "kg") : 1}
 
 def add_itm (kd, k, v):
-    if kd.has_key(k):
+    if k in kd:
         kd[k].append(v)
     else:
         kd[k]=[v]
@@ -666,7 +666,7 @@ for lst in SYNONYMS:
         add_itm(keydic,i,k)
 
 for amb,lst in AMBIGUOUS.items():
-    if keydic.has_key(amb):
+    if amb in keydic:
         keydic[amb] += lst
     else:
         keydic[amb] = lst
@@ -688,7 +688,7 @@ v_plural_matcher = re.compile('ves')
 def guess_singulars (s):
     if len(s)<3: return []
     rets = []
-    if irregular_plurals.has_key(s):
+    if s in irregular_plurals:
         rets.append(irregular_plurals[s])
     if two_digit_plural_matcher.search(s):
         wrd=s[0:-2]

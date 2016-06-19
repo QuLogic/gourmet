@@ -111,12 +111,12 @@ class mealmaster_exporter (exporter_mult):
         if len(unit) > 2 or '.' in unit:
             unit_bad = True
             # Try to fix the unit
-            if self.conv.unit_dict.has_key(unit):
+            if unit in self.conv.unit_dict:
                 new_u = self.conv.unit_dict[unit]
                 if len(new_u) <= 2 and not '.' in new_u:
                     unit = new_u; unit_bad = False
                 else:
-                    if self.uc.has_key(new_u):
+                    if new_u in self.uc:
                         unit = self.uc[new_u]; unit_bad = False
         if unit_bad: # If we couldn't fix the unit...  we add it to
             # the item

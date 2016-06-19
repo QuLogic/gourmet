@@ -42,7 +42,7 @@ except:
 
 # NOW WE DO AUTOMATED STUFF
 def add_itm (kd, k, v):
-    if kd.has_key(k):
+    if k in kd:
         kd[k].append(v)
     else:
         kd[k]=[v]
@@ -56,7 +56,7 @@ for lst in lang.SYNONYMS:
         add_itm(lang.keydic,k,i)
 
 for amb,lst in lang.AMBIGUOUS.items():
-    if lang.keydic.has_key(amb):
+    if amb in lang.keydic:
         lang.keydic[amb] += lst
     else:
         lang.keydic[amb] = lst
@@ -101,7 +101,7 @@ def get_pluralized_form (word, n):
     if not word:
         return ''
     lword=word.lower()
-    if WORD_TO_SING_PLUR_PAIR.has_key(lword):
+    if lword in WORD_TO_SING_PLUR_PAIR:
         forms = list(WORD_TO_SING_PLUR_PAIR[lword])
         forms += [n]
         return ngettext(*forms)

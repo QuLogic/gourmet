@@ -92,7 +92,7 @@ class ModalDialog (gtk.Dialog):
 
     def response_cb (self, dialog, response, *params):
         # print('response CB ', dialog, response, params)
-        if self.responses.has_key(response):
+        if response in self.responses:
             # print('we have a response!')
             self.responses[response]()
         else:
@@ -152,7 +152,7 @@ class MessageDialog (gtk.MessageDialog, ModalDialog):
 
     def setup_dialog (self, *args, **kwargs):
         kwargs['type']=self.message_type
-        if kwargs.has_key('title'):
+        if 'title' in kwargs:
             title = kwargs['title']
             del kwargs['title']
         gtk.MessageDialog.__init__(self, *args, **kwargs)
@@ -819,9 +819,9 @@ def show_message (*args, **kwargs):
     Args and Kwargs are handed to MessageDialog
     We most likely want to hand it label= and sublabel=
     """
-    #if not kwargs.has_key(message_type):
+    # if message_type not in kwargs:
     #    message_type=gtk.MESSAGE_INFO
-    if not kwargs.has_key('cancel'):
+    if 'cancel' not in kwargs:
         kwargs['cancel']=False
     d=MessageDialog(*args,**kwargs)
     d.run()
@@ -1008,7 +1008,7 @@ class FileSelectorDialog:
             if not fn:
                 return True
             ext=os.path.splitext(fn)[1]
-            if self.ext_to_filter.has_key(ext):
+            if ext in self.ext_to_filter:
                 self.internal_extension_change=True
                 self.fsd.set_filter(self.ext_to_filter[ext])
                 self.internal_extension_change=False
@@ -1067,7 +1067,7 @@ class FileSelectorDialog:
             if self.action==gtk.FILE_CHOOSER_ACTION_SAVE:
                 # add the extension if need be...
                 if self.do_saveas and not self.is_extension_legal(fn):
-                    if self.name_to_ext.has_key(self.fsd.get_filter().get_name()):
+                    if self.fsd.get_filter().get_name() in self.name_to_ext:
                         add_ext = self.name_to_ext[self.fsd.get_filter().get_name()]
                         if add_ext: fn += add_ext
             self.quit()

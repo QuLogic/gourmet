@@ -386,7 +386,7 @@ class DiffTable (gtk.Table):
         for attr,name,typ in [('last_modified','Last Modified',None)] + gglobals.REC_ATTRS \
                 + [('image','Image',None)] \
                 + [(attr,gglobals.TEXT_ATTR_DIC[attr],None) for attr in gglobals.DEFAULT_TEXT_ATTR_ORDER]:
-            if diff_dic.has_key(attr):
+            if attr in diff_dic:
                 buttons = self.build_options(attr,self.diff_dic[attr])
                 label = gtk.Label('_'+name+':')
                 label.set_alignment(0.0,0.5)

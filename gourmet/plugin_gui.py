@@ -47,7 +47,8 @@ class PluginChooser:
                 cat = plugin_set.category
             except AttributeError:
                 cat = 'Main'
-            if not categorized.has_key(cat): categorized[cat]=[]
+            if cat not in categorized:
+                categorized[cat] = []
             categorized[cat].append((module_name,plugin_set))
         return categorized
     

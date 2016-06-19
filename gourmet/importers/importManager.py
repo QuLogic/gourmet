@@ -206,7 +206,7 @@ class ImportManager (plugin_loader.Pluggable):
         return self.plugins_by_name[name]
 
     def get_tempfilename (self, url, data, content_type):
-        if self.tempfiles.has_key(url):
+        if url in self.tempfiles:
             return self.tempfiles[url]
         else:
             fn = url.split('/')[-1]
@@ -225,7 +225,7 @@ class ImportManager (plugin_loader.Pluggable):
         return self.tempfiles[url]
 
     def guess_extension (self, content_type):
-        if self.extensions_by_mimetype.has_key(content_type):
+        if content_type in self.extensions_by_mimetype:
             answers = self.extensions_by_mimetype[content_type].items()
             answers.sort(lambda a,b: cmp(a[1],b[1])) # sort by count...
             return answers[-1][0] # Return the most frequent
@@ -254,7 +254,7 @@ class ImportManager (plugin_loader.Pluggable):
         self.plugins.append(plugin)
         if isinstance(plugin,ImporterPlugin):
             name = plugin.name
-            if self.plugins_by_name.has_key(name):
+            if name in self.plugins_by_name:
                 print('WARNING', 'replacing', self.plugins_by_name[name],
                       'with', plugin)
             self.plugins_by_name[name] = plugin
@@ -264,7 +264,7 @@ class ImportManager (plugin_loader.Pluggable):
 
     def learn_mimetype_extension_mappings (self, plugin):
         for mt in plugin.mimetypes:
-            if not self.extensions_by_mimetype.has_key(mt):
+            if mt not in self.extensions_by_mimetype:
                 self.extensions_by_mimetype[mt] = {}
             for ptrn in plugin.patterns:
                 if ptrn.find('*.')==0:
@@ -276,7 +276,7 @@ class ImportManager (plugin_loader.Pluggable):
     def unregister_plugin (self, plugin):
         if isinstance(plugin,ImporterPlugin):
             name = plugin.name
-            if self.plugins_by_name.has_key(name):
+            if name in self.plugins_by_name:
                 del self.plugins_by_name[name]
                 self.plugins.remove(plugin)
             else:

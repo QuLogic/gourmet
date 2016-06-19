@@ -32,7 +32,7 @@ class RecHandler (xml_importer.RecHandler):
             for att in ['cuisine','source','category']:
                 raw = unquoteattr(attrs.get(att,''))
                 if raw:
-                    if self.meta[att].has_key(raw):
+                    if raw in self.meta[att]:
                         self.rec[att]=self.meta[att][raw]
                     else:
                         self.rec[att]=raw

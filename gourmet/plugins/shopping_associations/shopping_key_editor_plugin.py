@@ -45,7 +45,7 @@ class KeyEditorPlugin (PluginPlugin):
         return tvc
         
     def cell_data_func (self, col, renderer, model, itr, key_col):
-        if self.ingkeys_to_change.has_key(model[itr][key_col]):
+        if model[itr][key_col] in self.ingkeys_to_change:
             cat = self.ingkeys_to_change[model[itr][key_col]]
         else:
             shopcat_row = self.rd.fetch_one(self.rd.shopcats_table,

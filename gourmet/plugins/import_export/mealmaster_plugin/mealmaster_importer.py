@@ -438,7 +438,7 @@ class mmf_importer (plaintext_importer.TextImporter):
     def add_unit (self, unit):
         testtimer = TimeAction('mealmaster_importer.add_unit',10)
         unit = unit.strip()
-        if self.mmf.unit_conv.has_key(unit):
+        if unit in self.mmf.unit_conv:
             unit = self.mmf.unit_conv[unit]
         importer.Importer.add_unit(self,unit)
         testtimer.end()

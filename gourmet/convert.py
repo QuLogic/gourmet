@@ -17,22 +17,24 @@ class PossiblyCaseInsensitiveDictionary (dict):
 
     transformations = ["lower","title","upper"]
 
-    def has_key (self, k):
-        if dict.has_key(self,k): return True
+    def __contains__(self, k):
+        if dict.__contains__(self, k):
+            return True
         else:
             for t in self.transformations:
                 if hasattr(k,t):
-                    if dict.has_key(self,getattr(k,t)()): return True
+                    if dict.__contains__(self, getattr(k, t)()):
+                        return True
         return False
 
     def __getitem__ (self, k):
-        if dict.has_key(self,k):
+        if dict.__contains__(self, k):
             return dict.__getitem__(self,k)
         else:
             for t in self.transformations:
                 if hasattr(k,t):
                     nk = getattr(k,t)()
-                    if dict.has_key(self,nk):
+                    if dict.__contains__(self, nk):
                         return dict.__getitem__(self,nk)
         # Raise plain old error
         dict.__getitem__(self,k)
@@ -178,9 +180,9 @@ class Converter:
             return 1.0
         else:
             dict=self.conv_table
-            if dict.has_key((u1,u2)):
+            if (u1, u2) in dict:
                 return dict[(u1,u2)]
-            elif dict.has_key((u2,u1)):
+            elif (u2, u1) in dict:
                 return float(1) / float(dict[(u2,u1)])
             else:
                 return 0
@@ -189,14 +191,14 @@ class Converter:
         if u1 == u2:
             return 1.0
         if not density:
-            if self.density_table.has_key(item):
+            if item in self.density_table:
                 density=self.density_table[item]
             else:
                 return None
-        if self.v2m_table.has_key((u1,u2)):
+        if (u1, u2) in self.v2m_table:
             conv = self.v2m_table[(u1,u2)]                
             return conv * density
-        elif self.v2m_table.has_key((u2,u1)):
+        elif (u2, u1) in self.v2m_table:
             conv = float(1) / float(self.v2m_table[(u2,u1)])
             return conv / density
         else:
@@ -224,7 +226,7 @@ class Converter:
             v = itm[1]
             dct = self.cross_unit_dicts[v[0]]
             conv = v[1]
-            if item and dct.has_key(item):
+            if item and item in dct:
                 mult = dct[item]
             if mult: 
                 ret[k] = conv * mult
@@ -232,11 +234,11 @@ class Converter:
 
     def converter (self, u1, u2, item=None, density=None):
         ## Just a front end to convert_fancy that looks up units
-        if self.unit_dict.has_key(u1):
+        if u1 in self.unit_dict:
             unit1 = self.unit_dict[u1]
         else:
             unit1 = u1
-        if self.unit_dict.has_key(u2):
+        if u2 in self.unit_dict:
             unit2 = self.unit_dict[u2]
         else:
             unit2 = u2
@@ -523,7 +525,7 @@ class Converter:
         for num_start,num_end,section_end in numbers:
             num = frac_to_float(timestring[num_start:num_end])
             unit = timestring[num_end:section_end].strip()
-            if self.unit_dict.has_key(unit):
+            if unit in self.unit_dict:
                 conv = self.converter(unit,'seconds')
                 if conv and num:
                     secs += num * conv
@@ -539,7 +541,7 @@ class Converter:
         num = []
         for n,w in enumerate(words):
             if NUMBER_MATCHER.match(w): num.append(w)
-            elif num and self.unit_dict.has_key(w):                
+            elif num and w in self.unit_dict:
                 conv = self.converter(w,'seconds')
                 if conv:
                     n = frac_to_float(" ".join(num))
@@ -846,11 +848,13 @@ def fractify (decimal, divisor, approx=0.01, fractions=FRACTIONS_NORMAL):
             return "%s/%s"%(dividend,divisor)
         elif fractions==FRACTIONS_ALL:
             # otherwise, we have to do nice unicode magic
-            if NUM_TO_FRACTIONS.has_key((dividend,divisor)):
+            if (dividend, divisor) in NUM_TO_FRACTIONS:
                 return NUM_TO_FRACTIONS[(dividend,divisor)]
             else:
-                if SUP_DICT.has_key(dividend): dividend = SUP_DICT[dividend]
-                if SUB_DICT.has_key(divisor): divisor = SUB_DICT[divisor]
+                if dividend in SUP_DICT:
+                    dividend = SUP_DICT[dividend]
+                if divisor in SUB_DICT:
+                    divisor = SUB_DICT[divisor]
                 return '%s%s%s'%(dividend,SLASH,divisor)
         else: # fractions==FRACTIONS_NORMAL
             #fallback to "normal" fractions -- 1/4, 1/2, 3/4 are special
@@ -924,7 +928,7 @@ def float_string (s):
     Also, we recognize items outside of our locale, since e.g. American might well be
     importing British recipes and viceversa.
     """
-    if NUMBER_WORDS.has_key(s.lower()):
+    if s.lower() in NUMBER_WORDS:
         print('We have key', s.lower())
         return NUMBER_WORDS[s.lower()]
     THOUSEP = locale.localeconv()['thousands_sep']
@@ -958,8 +962,9 @@ def float_string (s):
 
 def frac_to_float (s):
     """We assume fractions look like this (I )?N/D"""
-    if NUMBER_WORDS.has_key(s): return NUMBER_WORDS[s]
-    if hasattr(s,'lower') and NUMBER_WORDS.has_key(s.lower()):
+    if s in NUMBER_WORDS:
+        return NUMBER_WORDS[s]
+    if hasattr(s, 'lower') and s.lower() in NUMBER_WORDS:
         return NUMBER_WORDS[s.lower()]    
     s = unicode(s)
     m=FRACTION_MATCHER.match(s)
@@ -968,9 +973,9 @@ def frac_to_float (s):
         frac = m.group('frac')
         if i: i=float_string(i)
         else: i = 0
-        if UNICODE_FRACTIONS.has_key(frac):
+        if frac in UNICODE_FRACTIONS:
             return i+UNICODE_FRACTIONS[frac]
-        elif NUMBER_WORDS.has_key(frac):
+        elif frac in NUMBER_WORDS:
             return i+NUMBER_WORDS[frac]
         else:
             n,d = SLASH_MATCHER.split(frac)
@@ -1012,7 +1017,7 @@ if __name__ == '__main__' and False:
             for k in self.options.keys():
                 print(k)
             choice = raw_input('Type your choice: ')
-            if self.options.has_key(choice):
+            if choice in self.options:
                 self.options[choice]()
             else:
                 print("I'm afraid I didn't understand your choice!")
@@ -1021,7 +1026,7 @@ if __name__ == '__main__' and False:
                           
         def get_unit (self, prompt="Enter unit: "):
             u = raw_input(prompt).strip()
-            if self.c.unit_dict.has_key(u):
+            if u in self.c.unit_dict:
                 return u
             elif u=='list':
                 for u in self.c.unit_dict.keys():

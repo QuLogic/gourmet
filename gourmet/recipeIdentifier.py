@@ -178,7 +178,7 @@ def diff_recipes (rd,recs):
         # don't care (i.e. we don't care about the difference between
         # None and "" or between None and 0).
         if vals != [vals[0]] * len(vals) and True in [bool(v) for v in vals]:
-            #if TEXT_ATTR_DIC.has_key(attr):
+            # if attr in TEXT_ATTR_DIC:
             #    val1,val2 = 
             diffs[attr]=vals
     return diffs
@@ -264,13 +264,13 @@ if __name__ == '__main__':
 #         if count % 10 == 0:
 #             print(count, rec.id, ch)
 #         print(ch, rec.id)
-#         if ir.has_key(ch):
+#         if ch in ir:
 #             print(rec.id, rec.title, 'is a complete duplicate of', ir[ch].id,
 #                   ir[ch].title)
 #             print('Merge would be: ', merge_recipes(rd, [rec, ir[ch]]))
 #         else:
 #             ir[ch]=rec
-#         if rr.has_key(rh):
+#         if rh in rr:
 #             print(rec.id, rec.title, 'duplicates', rr[rh].id, rr[rh].title)
 #             rdiff = diff_recipes(rd,[rec,rr[rh]])
 #             idiff =  diff_ings(rd,rec,rr[rh])
@@ -294,7 +294,7 @@ if __name__ == '__main__':
                 
 #         else:
 #             rr[rh]=rec
-#         if ii.has_key(ih) and ih != empty_hash:
+#         if ih in ii and ih != empty_hash:
 #             print(rec.id, rec.title, 'duplicates ings', ii[ih].id,
 #                   ii[ih].title)
 #         else:

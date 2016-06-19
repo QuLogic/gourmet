@@ -53,7 +53,7 @@ class WindowSaver (WidgetSaver):
     def load_properties (self):
         #if os.name=='nt': return
         for p,f in ['window_size', self.w.resize],['position',self.w.move]:
-            if self.dictionary.has_key(p) and self.dictionary[p]:
+            if p in self.dictionary and self.dictionary[p]:
                 debug('applying %s %s'%(f,self.dictionary[p]),3)
                 #if os.name=='nt' and p=='position' and self.dictionary['position'][1]<20:
                 #    print('FIDDLING WITH WINDOW FOR WINDOWS')

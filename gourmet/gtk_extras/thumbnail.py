@@ -26,7 +26,7 @@ def check_for_thumbnail (uri, type="large",reporthook=None):
     if not os.path.isdir(targetdir):
         import tempfile
         name = tempfile.mktemp()
-    if fetched_uris.has_key(uri) and os.path.exists(fetched_uris[uri]):
+    if uri in fetched_uris and os.path.exists(fetched_uris[uri]):
         fn = fetched_uris[uri]
     else:
         try:
@@ -45,7 +45,7 @@ def check_for_thumbnail (uri, type="large",reporthook=None):
         i=Image.open(name)
     except:
         return create_thumbnail(fn,name,uri,type)
-    if not i.info.has_key('Thumb::MTime'):
+    if 'Thumb::MTime' not in i.info:
         debug('Thumbnail has no time registered, creating a new one.',1)
         return create_thumbnail(fn,name,uri,type)
     mtime = i.info['Thumb::MTime']

@@ -42,7 +42,7 @@ for tag,label in [
     ('inggroup',_('Ingredient Subgroup')),
     ('ignore',_('Hide'))
     ]:
-    if not DEFAULT_TAG_LABELS.has_key(tag):
+    if tag not in DEFAULT_TAG_LABELS:
         DEFAULT_TAG_LABELS[tag] = label
 
 UI_TAG_ORDER = [
@@ -63,13 +63,13 @@ class ConvenientImporter (importer.Importer):
     """
     def add_attribute (self, attname, txt):
         txt=txt.strip()
-        if self.rec.has_key(attname):
+        if attname in self.rec:
             self.rec[attname] = self.rec[attname] + ', ' + txt
         else:
             self.rec[attname] = txt
 
     def add_text (self, attname, txt):
-        if self.rec.has_key(attname):
+        if attname in self.rec:
             self.rec[attname] = self.rec[attname] + '\n' + txt
         else:
             self.rec[attname] = txt
@@ -276,7 +276,7 @@ class InteractiveImporter (ConvenientImporter, NotThreadSafe):
             b.connect('clicked',unhide_text)
             b.show()
             return
-        if self.label_counts.has_key(label):
+        if label in self.label_counts:
             count = self.label_counts[label]
             self.label_counts[label] += 1
         else:
@@ -407,7 +407,7 @@ class InteractiveImporter (ConvenientImporter, NotThreadSafe):
                 or
                 (e_offset > self.tb.get_iter_at_mark(lend).get_offset() > st_offset)):
                 self.remove_markup_text(idno)
-                if self.markup_partners.has_key(idno):
+                if idno in self.markup_partners:
                     self.remove_markup_text(self.markup_partners[idno])
         for lst,lend in self.labelled[:]:
             if ((e_offset > self.tb.get_iter_at_mark(lst).get_offset() > st_offset)

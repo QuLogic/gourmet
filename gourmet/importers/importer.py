@@ -142,7 +142,7 @@ class Importer (SuspendableThread):
             self.rec=dict
         else:
             self.rec = {}
-        #if not self.rec.has_key('id'):
+        # if 'id' not in self.rec:
         #else:
         #    self.rec['id']=self.rd.new_id()
         #debug('New Import\'s ID=%s'%self.rec['id'],0)
@@ -159,7 +159,7 @@ class Importer (SuspendableThread):
         text_to_add = gourmet.gglobals.REC_ATTR_DIC['yields' if attr=='servings'
                                                     else attr] \
                       +': '+recdic[attr]
-        if not recdic.has_key('instructions'):
+        if 'instructions' not in recdic:
             recdic['instructions']=text_to_add
         else:
             recdic['instructions']=recdic['instructions']+'\n'+text_to_add
@@ -168,11 +168,11 @@ class Importer (SuspendableThread):
     def commit_rec (self):
         timeaction = TimeAction('importer.commit_rec',10)
         for key in ['cuisine','category','title']:
-            if self.rec.has_key(key):
+            if key in self.rec:
                 self.rec[key]=unicode(re.sub('\s+',' ',self.rec[key]).strip())
         # if yields/servings can't be recognized as a number, add them
         # to the instructions.
-        if self.rec.has_key('yields'):
+        if 'yields' in self.rec:
             try:
                 self.rec['yields'] = float(self.rec['yields'])
             except:
@@ -183,7 +183,7 @@ class Importer (SuspendableThread):
                 else:
                     self.rec['yields'] = yields
                     self.rec['yield_unit'] = yield_unit
-        if self.rec.has_key('servings'):
+        if 'servings' in self.rec:
             servs=self.convert_str_to_num(self.rec['servings'])
             if servs != None:
                 self.rec['yields'] = float(servs)
@@ -195,7 +195,7 @@ class Importer (SuspendableThread):
                 self._move_to_instructions(self.rec,'servings')
         # Check preptime and cooktime
         for t in ['preptime','cooktime']:
-            if self.rec.has_key(t) and not isinstance(self.rec[t], int):
+            if t in self.rec and not isinstance(self.rec[t], int):
                 secs = self.conv.timestring_to_seconds(self.rec[t])
                 if secs != None:
                     self.rec[t]=secs
@@ -204,13 +204,14 @@ class Importer (SuspendableThread):
         # Markup instructions and mods as necessary
         if self.do_markup:
             for k in ['instructions','modifications']:
-                if self.rec.has_key(k): self.rec[k] = xml.sax.saxutils.escape(self.rec[k])
+                if k in self.rec:
+                    self.rec[k] = xml.sax.saxutils.escape(self.rec[k])
         # A little strange, this is, but for UI reasons, we want to
         # keep track of any ratings that are not integers so that we
         # can ask the user how to convert them when we're all done
         # with importing.              
         remembered_rating = None
-        if (self.rec.has_key('rating') and
+        if ('rating' in self.rec and
                 not isinstance(self.rec['rating'], (int, float))):
             if string_to_rating(self.rec['rating']):
                 self.rec['rating']=string_to_rating(self.rec['rating'])
@@ -235,12 +236,12 @@ class Importer (SuspendableThread):
                     del self.rec['image']
                     del self.rec['thumb']                    
         ## if we have an ID, we need to remember it for the converter
-        if self.rec.has_key('id'):
+        if 'id' in self.rec:
             id_to_convert = self.rec['id']            
         else:
             id_to_convert = None
         if id_to_convert:
-            if self.id_converter.has_key(self.rec['id']):
+            if self.rec['id'] in self.id_converter:
                 self.rec['id']=self.id_converter[self.rec['id']]
                 r = self.rd.add_rec(self.rec,accept_ids=True) # See doc on add_rec
             else:
@@ -251,7 +252,7 @@ class Importer (SuspendableThread):
             r = self.rd.add_rec(self.rec)
         # Add ingredients...
         for i in self.added_ings:
-            if i.has_key('id'):
+            if 'id' in i:
                 print('WARNING: Ingredient has ID set -- ignoring value')
                 del i['id']
             i['recipe_id'] = r.id
@@ -306,12 +307,12 @@ class Importer (SuspendableThread):
         timeaction = TimeAction('importer.start_ing',10)
         #gt.gtk_update()
         self.ing=kwargs
-        #if self.ing.has_key('id'):
+        # if 'id' in self.ing:
         #    self.ing['recipe_id']=self.ing['id']
         #    del self.ing['id']
         #    print('WARNING: setting ingredients ID is deprecated. Assuming '
         #          'you mean to set recipe_id')
-        #elif self.rec.has_key('id'):
+        # elif 'id' in self.rec:
         #    self.ing['recipe_id']=self.rec['id']
         #debug('ing ID %s, recipe ID %s'%(self.ing['recipe_id'],self.rec['id']),0)
         timeaction.end()
@@ -320,37 +321,32 @@ class Importer (SuspendableThread):
         timeaction = TimeAction('importer.finish_ing 1',10)
         # Strip whitespace...
         for key in ['item','ingkey','unit']:
-            if self.ing.has_key(key):
+            if key in self.ing:
                 self.ing[key]=re.sub('\s+',' ',self.ing[key]).strip()
-        if not (
-            (self.ing.has_key('refid') and
-             self.ing['refid'])
-            or
-            (self.ing.has_key('ingkey') and
-             self.ing['ingkey'])
-            ):
+        if not (('refid' in self.ing and self.ing['refid']) or
+                ('ingkey' in self.ing and self.ing['ingkey'])):
             #self.ing['ingkey']=self.km.get_key(self.ing['item'],0.9)
-            if self.ing.has_key('item'):
+            if 'item' in self.ing:
                 self.ing['ingkey']=self.km.get_key_fast(self.ing['item'])
             else:
                 debug('Ingredient has no item! %s'%self.ing,-1)
         timeaction.end()
         # if we have an amount (and it's not None), let's convert it
         # to a number
-        if self.ing.has_key('amount') and self.ing['amount']\
-               and not self.ing.has_key('rangeamount'):
+        if ('amount' in self.ing and self.ing['amount'] and
+                'rangeamount' not in self.ing):
             if convert.RANGE_MATCHER.search(str(self.ing['amount'])):
                 self.ing['amount'],self.ing['rangeamount']=parse_range(self.ing['amount'])
-        if self.ing.has_key('amount'):
+        if 'amount' in self.ing:
             self.ing['amount']=convert.frac_to_float(
                 self.ing['amount']
                 )
-        if self.ing.has_key('rangeamount'):
+        if 'rangeamount' in self.ing:
             self.ing['rangeamount']=convert.frac_to_float(
                 self.ing['rangeamount']
                 )
         timeaction = TimeAction('importer.commit_ing 2',10)
-        if not (self.ing.has_key('position') and self.ing['position']):
+        if not ('position' in self.ing and self.ing['position']):
             self.ing['position']=self.position
             self.position+=1
         timeaction.end()
@@ -375,7 +371,7 @@ class Importer (SuspendableThread):
 
     def add_ref (self, id):
         timeaction = TimeAction('importer.add_ref',10)
-        if not self.id_converter.has_key(id):
+        if id not in self.id_converter:
             self.id_converter[id]=self.rd.new_id()
         self.ing['refid']=self.id_converter[id]
         self.ing['unit']='recipe'
@@ -510,7 +506,7 @@ class RatingConverter:
         ratings = []
         need_conversions = False
         for v in self.to_convert.values():
-            if not need_conversions and not self.conversions.has_key(v.lower()):
+            if not need_conversions and v.lower() not in self.conversions:
                 need_conversions = True
             if v not in ratings:
                 ratings.append(v)
@@ -524,7 +520,9 @@ class RatingConverter:
             self.get_conversions()
         for id,rating in self.to_convert.items():
             try:
-                if not self.conversions.has_key(rating) and hasattr(rating,'lower') and self.conversions.has_key(rating.lower()):
+                if (rating not in self.conversions and
+                        hasattr(rating, 'lower') and
+                        rating.lower() in self.conversions):
                     rating = rating.lower()
                 db.modify_rec(db.get_rec(id),{'rating':self.conversions[rating]})
             except:

@@ -164,7 +164,8 @@ class ExportManager (plugin_loader.Pluggable):
             print('Return exporter instance')
             return exporterInstance        
 
-    def can_export_type (self, name): return self.plugins_by_name.has_key(name)
+    def can_export_type(self, name):
+        return name in self.plugins_by_name
 
     def get_exporter (self, name):
         return self.plugins_by_name[name]
@@ -183,14 +184,14 @@ class ExportManager (plugin_loader.Pluggable):
 
     def register_plugin (self, plugin):
         name = plugin.saveas_filters[0]
-        if self.plugins_by_name.has_key(name):
+        if name in self.plugins_by_name:
             print('WARNING', 'replacing', self.plugins_by_name[name], 'with',
                   plugin)
         self.plugins_by_name[name] = plugin
 
     def unregister_plugin (self, plugin):
         name = plugin.saveas_filters[0]
-        if self.plugins_by_name.has_key(name):
+        if name in self.plugins_by_name:
             del self.plugins_by_name[name]
         else:
             print('WARNING: unregistering ', plugin,

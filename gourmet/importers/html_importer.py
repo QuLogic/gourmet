@@ -184,9 +184,9 @@ class BeautifulSoupScraper:
         """
         if not base: return # path ran out...
         ind=step.get('index',0)
-        if step.has_key('regexp'):
+        if 'regexp' in step:
             ret = base.fetchText(re.compile(step['regexp']))
-        elif step.has_key('string'):
+        elif 'string' in step:
             ret = base.fetchText('string')        
         else:
             get_to = None
@@ -208,11 +208,11 @@ class BeautifulSoupScraper:
             # example, if we have step['moveto']='parent', we grab the
             # parents of each tag we would otherwise return. This can
             # also work for previousSibling, nextSibling, etc.
-            if step.has_key('moveto'):
+            if 'moveto' in step:
                 ret = [getattr(o,step['moveto']) for o in ret]
             else:
                 for motion in ['firstNext','firstPrevious','findParent']:
-                    if step.has_key(motion):
+                    if motion in step:
                         ret = [getattr(o,motion)(step[motion]) for o in ret]
                         break
             if isinstance(ind, (list, tuple)):
@@ -253,7 +253,7 @@ class BeautifulSoupScraper:
         if post_processing:
             val=self.post_process(post_processing, val, tag)
         if not val: return # don't store empty values
-        if self.dic.has_key(name):
+        if name in self.dic:
             curval = self.dic[name]
             if isinstance(curval, list):
                 self.dic[name].append(val)
@@ -369,7 +369,7 @@ def get_image_from_tag (iurl, page_url):
 def scrape_url (url, progress=None):
     if isinstance(url, str):
         domain = url.split('/')[2]
-    if SUPPORTED_URLS.has_key(domain):
+    if domain in SUPPORTED_URLS:
         bss = BeautifulSoupScraper(SUPPORTED_URLS[domain])
     else:
         bss = None
@@ -540,13 +540,13 @@ class WebPageImporter (importer.Importer):
                     if self.prog: self.prog(-1,_('Processing ingredients'))
                     # we take a special keyword, "text", which gets
                     # parsed
-                    if ingdic.has_key('text'):
+                    if 'text' in ingdic:
                         d = self.rd.parse_ingredient(ingdic['text'],conv=self.conv)
                         if d:
                             for dk,dv in d.items():
-                                if not ingdic.has_key(dk) or not ingdic[dk]:
+                                if dk not in ingdic or not ingdic[dk]:
                                     ingdic[dk]=dv
-                        elif not ingdic.has_key('item'):
+                        elif 'item' not in ingdic:
                             ingdic['item']=ingdic['text']
                         del ingdic['text']
                     self.start_ing(**ingdic)

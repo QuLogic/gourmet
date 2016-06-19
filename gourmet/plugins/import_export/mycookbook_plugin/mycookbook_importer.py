@@ -100,7 +100,7 @@ class RecHandler (xml_importer.RecHandler):
             self.current_section = ''
         elif name==self.COMMENT_TAG:
             self.current_section = ''
-        elif self.RECTAGS.has_key(name):
+        elif name in self.RECTAGS:
             obj = self.rec
             key,method = self.RECTAGS[name]
 
@@ -110,7 +110,7 @@ class RecHandler (xml_importer.RecHandler):
                 # ours is from 1 to 10, so we have to multiply by 2 when
                 # importing.
                 obj['rating']=int(self.elbuf.strip()) * 2
-            elif method == self.ADD and obj.has_key(key):
+            elif method == self.ADD and key in obj:
                 obj[key]=obj[key]+"\n "+self.elbuf
             else:
                 obj[key]=self.elbuf

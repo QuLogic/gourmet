@@ -75,15 +75,15 @@ class ImportTest:
         for d in tests: self.run_test(d)
 
     def run_test (self, d):
-        if d.has_key('filename'):
+        if 'filename' in d:
             d['filename']=os.path.join(TEST_FILE_DIRECTORY,
                                        d['filename'])
             self.test_import(d['filename'])
-        elif d.has_key('url'):
+        elif 'url' in d:
             self.test_web_import(d['url'])
         else:
             print('WTF: no test contained in ', d)
-        if d.has_key('test'):
+        if 'test' in d:
             self.do_test(d['test'])
 
     def do_test (self, test):

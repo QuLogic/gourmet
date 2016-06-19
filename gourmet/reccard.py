@@ -485,7 +485,7 @@ class RecCardDisplay (plugin_loader.Pluggable):
             }
         self.update_image()
         for attr in self.display_info:
-            if self.special_display_functions.has_key(attr):
+            if attr in self.special_display_functions:
                 self.special_display_functions[attr]()
             else:
                 widg=getattr(self,'%sDisplay'%attr)
@@ -960,7 +960,7 @@ class RecEditor (WidgetSaver.WidgetPrefs, plugin_loader.Pluggable):
     def show_module (self, module_name):
         """Show the part of our interface corresponding with module
         named module_name."""
-        if not self.module_tab_by_name.has_key(module_name):
+        if module_name not in self.module_tab_by_name:
             raise ValueError('RecEditor has no module named %s'%module_name)
         self.notebook.set_current_page(
             self.module_tab_by_name[module_name]
@@ -1057,7 +1057,7 @@ class RecEditor (WidgetSaver.WidgetPrefs, plugin_loader.Pluggable):
         self.current_rec = self.rg.rd.modify_rec(self.current_rec,newdict)
         self.rg.rd.update_hashes(self.current_rec)
         self.rg.rmodel.update_recipe(self.current_rec)
-        if newdict.has_key('title'):
+        if 'title' in newdict:
             self.window.set_title("%s %s"%(self.edit_title,self.current_rec.title.strip()))
         self.set_edited(False)
         self.reccard.new = False
@@ -1202,12 +1202,12 @@ class IngredientEditorModule (RecEditorModule):
         """Add an ingredient to our list from a line of plain text"""
         d=self.rg.rd.parse_ingredient(line, conv=self.rg.conv)
         if d:
-            if d.has_key('rangeamount'):
+            if 'rangeamount' in d:
                 d['amount'] = self.rg.rd._format_amount_string_from_amount(
                     (d['amount'],d['rangeamount'])
                     )    
                 del d['rangeamount']
-            elif d.has_key('amount'):
+            elif 'amount' in d:
                 d['amount'] = convert.float_to_frac(d['amount'])
         else:
             d = {}
@@ -1773,7 +1773,7 @@ class IngredientController (plugin_loader.Pluggable):
                                     **ingdict):
         iter = self._new_iter_(group_iter=group_iter,prev_iter=prev_iter,
                                fallback_on_append=fallback_on_append)
-        if ingdict.has_key('refid') and ingdict['refid']:
+        if 'refid' in ingdict and ingdict['refid']:
             self.imodel.set_value(iter,0,
                                   RecRef(ingdict['refid'],ingdict.get('item',''))
                                   )
@@ -1821,7 +1821,7 @@ class IngredientController (plugin_loader.Pluggable):
         #if ingkey is not None: self.imodel.set_value(iter,5,ingkey)
         #if shop_cat:
         #    self.imodel.set_value(iter,6,shop_cat)
-        #elif ingkey and self.re.rg.sl.orgdic.has_key(ingkey):
+        # elif ingkey and ingkey in self.re.rg.sl.orgdic:
         #    self.imodel.set_value(iter,6,self.re.rg.sl.orgdic[ingkey])
                 
     def add_ingredient (self, ing, prev_iter=None, group_iter=None,
@@ -1859,7 +1859,7 @@ class IngredientController (plugin_loader.Pluggable):
         #self.imodel.set_value(iter, 5, i.ingkey)
         #if shop_cat:
         #    self.imodel.set_value(iter, 6, shop_cat)
-        #elif self.rg.sl.orgdic.has_key(i.ingkey):
+        # elif i.ingkey in self.rg.sl.orgdic:
         #    debug("Key %s has category %s"%(i.ingkey,self.rg.sl.orgdic[i.ingkey]),5)
         #    self.imodel.set_value(iter, 6, self.rg.sl.orgdic[i.ingkey])
         #else:
@@ -2056,7 +2056,7 @@ class IngredientController (plugin_loader.Pluggable):
     #@debug_decorator
     def get_iter_from_persistent_ref (self, ref):
         try:
-            if self.commited_items_converter.has_key(ref):
+            if ref in self.commited_items_converter:
                 ref = self.commited_items_converter[ref]
         except TypeError:
             # If ref is unhashable, we don't care
@@ -2114,7 +2114,7 @@ class IngredientController (plugin_loader.Pluggable):
                 else:
                     d['amount']=None
                 # Get category info as necessary
-                if d.has_key('shop_cat'):
+                if 'shop_cat' in d:
                     self.rg.sl.orgdic[d['ingkey']] = d['shop_cat']
                     del d['shop_cat']
                 d['position']=pos
@@ -2245,7 +2245,7 @@ class IngredientTreeUI:
             if expand: col.set_expand(expand)
             # Register ourselves...
             self.ingColsByName[head]=col
-            if self.head_to_att.has_key(head):
+            if head in self.head_to_att:
                 self.ingColsByAttr[self.head_to_att[head]]=n
             # All columns are reorderable and resizeable
             col.set_reorderable(True)

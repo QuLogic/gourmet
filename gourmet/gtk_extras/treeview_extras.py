@@ -263,7 +263,7 @@ class TreeViewConf:
                 debug("I don't know about column titled %s"%c.get_title(),3)
         prevcol=None
         for n in range(len(self.tv.get_columns())):
-            if coldic.has_key(n):
+            if n in coldic:
                 c=coldic[n]
                 self.tv.move_column_after(c,prevcol)
                 prevcol=c

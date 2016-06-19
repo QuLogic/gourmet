@@ -208,7 +208,7 @@ class RecipeParser:
             if tag not in self.joinable_tags or len(self.parsed)==0:
                 self.parsed.append([chunk,tag])
                 continue
-            if self.change_on_join.has_key(tag):
+            if tag in self.change_on_join:
                 look_for = [tag,self.change_on_join[tag]]
             else:
                 look_for = [tag]
@@ -219,7 +219,7 @@ class RecipeParser:
                 if oldtag in look_for:
                     self.parsed[-n][0] = oldchunk+add_on+chunk
                     added = True
-                    if self.change_on_join.has_key(oldtag):
+                    if oldtag in self.change_on_join:
                         self.parsed[-n][1] = self.change_on_join[oldtag]
                     # Strip off any added junk...
                     if n > 1:

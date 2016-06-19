@@ -140,7 +140,8 @@ class DatabaseGrabber:
                         print(d.get(sname, fl), 'is not an integer')
                         raise
                     # If it's nothing, we don't bother...
-                    if d.has_key(sname): del d[sname]                    
+                    if sname in d:
+                        del d[sname]
         return d
 
     def parse_abbrevfile (self, abbrevfile):
@@ -197,7 +198,8 @@ class DatabaseGrabber:
                     _('Reading weight data for nutritional items: imported %s of %s entries')%(n,tot)
                     )
             d = self.parse_line(l,WEIGHT_FIELDS)
-            if d.has_key('stdev'): del d['stdev']
+            if 'stdev' in d:
+                del d['stdev']
             try:
                 self.db.do_add_fast(self.db.usda_weights_table,d)
             except:

@@ -99,7 +99,7 @@ class DatabaseChooser:
                 getattr(self,w).show()
             else:
                 getattr(self,w).hide()
-        if self.default_files.has_key(self.current_db):
+        if self.current_db in self.default_files:
             self.fileEntry.set_text(self.default_files[self.current_db])
 
     def browse_cb (self,*args):

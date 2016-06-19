@@ -911,7 +911,7 @@ class PdfPrefGetter:
 
     def get_args_from_opts (self, opts):
         args = {}
-        if not get_prefs().has_key('PDF_EXP'):
+        if 'PDF_EXP' not in get_prefs():
             get_prefs()['PDF_EXP'] = {}
         prefs = get_prefs()['PDF_EXP']
         args['pagesize'] = self.page_sizes[opts[self.OPT_PS][1]] # PAGE SIZE

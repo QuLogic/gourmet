@@ -60,7 +60,7 @@ class NutritionData:
 
         factor is the amount we multiply by to get from unit to grams.
         """
-        if self.conv.unit_dict.has_key(unit):
+        if unit in self.conv.unit_dict:
             unit = self.conv.unit_dict[unit]
         prev_entry = self.db.fetch_one(self.db.nutritionconversions_table,
                                        **{'ingkey':key,'unit':unit})
@@ -195,7 +195,7 @@ class NutritionData:
         """
         if not unit: unit = ''
         densities,gramweights = self.get_conversions(key,row)
-        if gramweights.has_key(unit):
+        if unit in gramweights:
             mass = gramweights[unit] * amt
             return mass * 0.01
         # Otherwise, we are trying to find our density...
@@ -210,7 +210,7 @@ class NutritionData:
             description = description.strip()
             unit = unit.strip()
             print('description=', description)
-            if densities.has_key(description):
+            if description in densities:
                 print('We got a density!', 'unit=', unit)
                 density = densities[description]
                 print(density,type(density), '(unit=', unit, ')')
@@ -228,7 +228,7 @@ class NutritionData:
                                       )
         if not cnv:
             # lookup in our custom nutrition-related conversion table
-            if self.conv.unit_dict.has_key(unit):
+            if unit in self.conv.unit_dict:
                 unit = self.conv.unit_dict[unit]
             elif not unit:
                 unit = ''
@@ -280,7 +280,7 @@ class NutritionData:
         """Handed key or nutrow, return dictionary with densities."""
         if not row: row = self._get_key(key)
         if not row: return {}
-        if self.conv.density_table.has_key(key):
+        if key in self.conv.density_table:
             return {'':self.conv.density_table[key]}
         else:
             densities = {}       
@@ -314,12 +314,14 @@ class NutritionData:
     
     def get_density (self,key=None,row=None, fudge=True):
         densities = self.get_densities(key,row)
-        if densities.has_key(''): densities[None]=densities['']
+        if '' in densities:
+            densities[None] = densities['']
         if key: keyrow=self._get_key(key)
         if densities:
-            if key and keyrow and keyrow.density_equivalent and densities.has_key(keyrow.density_equivalent):
+            if (key and keyrow and keyrow.density_equivalent and
+                    keyrow.density_equivalent in densities):
                 return densities[keyrow.density_equivalent]
-            elif densities.has_key(None):
+            elif None in densities:
                 self.conv.density_table[key]=densities[None]
                 return densities[None]
             elif len(densities)==1:

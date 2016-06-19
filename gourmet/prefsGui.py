@@ -110,11 +110,12 @@ class PreferencesGui (plugin_loader.Pluggable):
 
     def set_widgets_from_prefs (self):
         for k in self.pref_dic.keys():
-            if self.prefs.has_key(k): self.update_pref(k,self.prefs[k])
+            if k in self.prefs:
+                self.update_pref(k, self.prefs[k])
 
     def update_pref (self, pref, value):
         """Update GUI to reflect value 'value' of preference 'pref'."""
-        if self.pref_dic.has_key(pref):
+        if pref in self.pref_dic:
             action=self.pref_dic[pref]
             if isinstance(action, dict):
                 # we fail if action is no
@@ -199,7 +200,7 @@ class PreferencesGui (plugin_loader.Pluggable):
         arguments.
         """
         self.prefs[name]=value
-        if self.apply_prefs_dic.has_key(name):
+        if name in self.apply_prefs_dic:
             self.apply_prefs_dic[name](name,value)
 
     def update_sensitivity_for_pref (self, name, value):

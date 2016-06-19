@@ -73,21 +73,23 @@ class MarkupString (str):
             if spos < s: spos=s
             if epos > e: epos=e
             if epos != spos: # we don't care about tags that don't markup any text
-                if not starts.has_key(spos): starts[spos]=[]
+                if spos not in starts:
+                    starts[spos] = []
                 starts[spos].append(stag)
-                if not ends.has_key(epos): ends[epos]=[]
+                if epos not in ends:
+                    ends[epos] = []
                 ends[epos].append(etag)
         outbuf = "" # our actual output string
         for pos in range(s,e): # we move through positions
             char = self.raw[pos]
-            if ends.has_key(pos):  # if there are endtags to insert...
+            if pos in ends:  # if there are endtags to insert...
                 for et in ends[pos]: outbuf += et
-            if starts.has_key(pos): # if there are start tags to insert
+            if pos in starts:  # if there are start tags to insert
                 mystarts = starts[pos]
                 # reverse these so the order works out,e.g. <i><b><u></u></b></i>
                 mystarts.reverse()
                 for st in mystarts: outbuf += st
             outbuf += char
-        if ends.has_key(e):
+        if e in ends:
             for et in ends[e]: outbuf+= et
         return MarkupString(str(outbuf)) # the str call is necessary to avoid unicode messiness

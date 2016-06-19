@@ -57,7 +57,7 @@ class MnemonicManager:
     def get_submanager (self, w):
         p = w.parent
         while p:
-            if self.sub_managers.has_key(p):
+            if p in self.sub_managers:
                 return self.sub_managers[p]
             p = p.parent
         return self
@@ -132,7 +132,7 @@ class MnemonicManager:
             while p:
                 if isinstance(p.parent,gtk.Notebook):
                     break
-                elif self.sub_managers.has_key(p.parent):
+                elif p.parent in self.sub_managers:
                     self.sub_managers[p.parent].add_widget_mnemonic(w)
                     added_to_sub = True
                     break
@@ -142,9 +142,9 @@ class MnemonicManager:
             if p and isinstance(p.parent,gtk.Notebook):
                 nb = p.parent
                 page = nb.page_num(p)
-                if not self.notebook_managers.has_key(nb):
+                if nb not in self.notebook_managers:
                     self.notebook_managers[nb]={}
-                if not self.notebook_managers[nb].has_key(page):
+                if page not in self.notebook_managers[nb]:
                     self.notebook_managers[nb][page]=MnemonicManager()
                 self.notebook_managers[nb][page].add_widget_mnemonic(w)
             else:
@@ -182,13 +182,14 @@ class MnemonicManager:
             # print('Add untouchable key:', k, w)
             self.untouchable_accels.append(k)
             self.untouchable_widgs.append(w)
-        if not self.mnemonics.has_key(k): self.mnemonics[k]=[]
+        if k not in self.mnemonics:
+            self.mnemonics[k] = []
         if not w in self.mnemonics[k]:
             self.mnemonics[k].append(w)
 
     def generate_new_mnemonic (self, text):
         for c in text:
-            if not self.mnemonics.has_key(c.lower()):
+            if c.lower() not in self.mnemonics:
                 self.mnemonics[c.lower()]=[text]
                 n = text.find(c)
                 return text[0:n]+'_'+text[n:]
@@ -220,7 +221,9 @@ class MnemonicManager:
         return alts
 
     def find_peaceful_alternatives (self, w):
-        return filter(lambda l: not self.mnemonics.has_key(l),self.find_alternatives(w))
+        return [l
+                for l in self.find_alternatives(w)
+                if l not in self.mnemonics]
     
     def fix_conflicts_peacefully (self, do_submenus=True):
         """Remove all conflicts from mnemonics.
@@ -300,9 +303,9 @@ class MnemonicManager:
     def change_mnemonic (self, widget, new_mnemonic):
         txt=widget.get_text()
         old = gtk.gdk.keyval_name(widget.get_mnemonic_keyval())
-        if self.mnemonics.has_key(old) and widget in self.mnemonics[old]:
+        if old in self.mnemonics and widget in self.mnemonics[old]:
             self.mnemonics[old].remove(widget)
-        if not self.mnemonics.has_key(new_mnemonic):
+        if new_mnemonic not in self.mnemonics:
             self.mnemonics[new_mnemonic]=[]
         self.mnemonics[new_mnemonic].append(widget)
         start = 0

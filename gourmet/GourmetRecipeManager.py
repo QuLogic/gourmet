@@ -128,7 +128,7 @@ class GourmetApplication:
                     ('pause',self.pause_cb),
                     ('stop',self.stop_cb),
                     ('modal',False),]:
-            if not progress_dialog_kwargs.has_key(k):
+            if k not in progress_dialog_kwargs:
                 progress_dialog_kwargs[k]=v
         if not hasattr(self,'progress_dialog') or not self.progress_dialog:
             self.progress_dialog = de.ProgressDialog(**progress_dialog_kwargs)
@@ -186,12 +186,12 @@ class GourmetApplication:
     # Methods for keeping track of open recipe cards...
     def del_rc (self, id):
         """Forget about recipe card identified by id"""
-        if self.rc.has_key(id):
+        if id in self.rc:
             del self.rc[id]
         self.update_go_menu()
 
     def update_reccards (self, rec):
-        if self.rc.has_key(rec.id):
+        if rec.id in self.rc:
             rc=self.rc[rec.id]
             rc.updateRecipe(rec,show=False)
             self.update_go_menu()
@@ -270,7 +270,7 @@ class GourmetApplication:
                 merged_dic[rc.current_rec.id] = merge_id
                 uimanager.ensure_update()                
         for idkey in merged_dic:
-            if not self.rc.has_key(idkey):
+            if idkey not in self.rc:
                 uimanager.remove_ui(merged_dic[idkey])
 
     # Methods to keep one set of listmodels for each attribute for
@@ -1129,7 +1129,7 @@ class RecGui (RecIndex, GourmetApplication, ImporterExporter, StuffThatShouldBeP
         gobject.idle_add(show)
 
     def open_rec_card (self, rec):
-        if self.rc.has_key(rec.id):
+        if rec.id in self.rc:
             self.rc[rec.id].show()
         else:
             def show ():
@@ -1161,7 +1161,7 @@ class RecGui (RecIndex, GourmetApplication, ImporterExporter, StuffThatShouldBeP
 
     def rec_tree_edit_rec (self, *args):
         for rec in self.get_selected_recs_from_rec_tree():
-            if self.rc.has_key(rec.id):
+            if rec.id in self.rc:
                 self.rc[rec.id].show_edit()
             else:
                 def show ():
@@ -1199,7 +1199,7 @@ class RecGui (RecIndex, GourmetApplication, ImporterExporter, StuffThatShouldBeP
 
         We return True if the user cancels deletion.
         """
-        if self.rc.has_key(rec.id):
+        if rec.id in self.rc:
             rc = self.rc[rec.id] 
             if rc.edited:
                 rc.show_edit()
@@ -1271,7 +1271,7 @@ class RecGui (RecIndex, GourmetApplication, ImporterExporter, StuffThatShouldBeP
     def delete_rec (self, rec):
         debug("delete_rec (self, rec): %s"%rec,5)
         debug("does %s have %s"%(self.rc,rec.id),5)
-        if self.rc.has_key(rec.id):
+        if rec.id in self.rc:
             debug("Getting rid of open recipe card window.",2)
             w=self.rc[rec.id].widget
             self.rc[rec.id].hide()

@@ -134,7 +134,8 @@ class PiePixbufGenerator:
 
     def get_image (self, angle, color):
         angle = int(angle)
-        if self.slices.has_key((angle,color)): return self.slices[(angle,color)]
+        if (angle, color) in self.slices:
+            return self.slices[(angle, color)]
         img = Image.new('RGBA',
                         (ICON_SIZE,ICON_SIZE),
                         255 # background

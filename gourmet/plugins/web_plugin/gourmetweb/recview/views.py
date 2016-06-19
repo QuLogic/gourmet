@@ -192,7 +192,7 @@ def shop (request, rec_id=None, mult=1):
 def shop_remove (request, rec_id=None):
     try:
         rec_id = int(rec_id)
-        if slist.recs.has_key(rec_id):
+        if rec_id in slist.recs:
             del slist.recs[int(rec_id)]
         else:
             print('Odd, there is no ', rec_id, 'on the shopping list')

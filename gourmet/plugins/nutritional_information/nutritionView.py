@@ -164,7 +164,7 @@ class NutritionItemView:
             if k:
                 # if we have a key that's not none, then we actually need a descChoiceWidget
                 self.setup_choices(self.densities.keys(),self.descChoiceWidget)
-                if self.densities.has_key(None):
+                if None in self.densities:
                     self.set_choice(self.descChoiceWidget,None)
                 else:
                     self.set_choice(self.descChoiceWidget,k)
@@ -195,7 +195,8 @@ class NutritionItemView:
         d=None
         # Grab our density (either the default density for the food, or the density for the
         # user-selected description, such as chopped, sliced, etc).
-        if self.densities.has_key(None) or self.densities and self.get_choice(self.descChoiceWidget):
+        if (None in self.densities or self.densities and
+                self.get_choice(self.descChoiceWidget)):
             d=self.densities[self.get_choice(self.descChoiceWidget) or None]
         multiplier=self.nut and self.nd.convert_amount(self.amount,
                                                        self.unit,
@@ -214,7 +215,7 @@ class NutritionItemView:
                 return
             else:
                 unit = self.get_choice(self.unitChoiceWidget)
-                if self.extra_units.has_key(unit):
+                if unit in self.extra_units:
                     return self.nd.convert_amount(amt*self.extra_units[unit],'g.')
                 else:
                     return self.nd.convert_amount(amt,unit,d)

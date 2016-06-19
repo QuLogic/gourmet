@@ -75,7 +75,7 @@ class MasterLoader:
             for ppath in plugins:
                 debug('Found %s'%ppath,1)
                 plugin_set = PluginSet(ppath)
-                if self.available_plugin_sets.has_key(plugin_set.module):
+                if plugin_set.module in self.available_plugin_sets:
                     print('Ignoring duplicate plugin ', plugin_set.module,
                           'found in ', ppath)
                 else:
@@ -92,7 +92,7 @@ class MasterLoader:
         self.active_plugins = []
         self.instantiated_plugins = {}
         for p in self.active_plugin_sets:
-            if self.available_plugin_sets.has_key(p):
+            if p in self.available_plugin_sets:
                 try:
                     self.active_plugins.extend(self.available_plugin_sets[p].plugins)
                 except:
@@ -184,12 +184,12 @@ class MasterLoader:
                         for pluggable in self.pluggables_by_class[klass]:
                             plugin().deactivate(pluggable)
 
-                if self.instantiated_plugins.has_key(plugin):
+                if plugin in self.instantiated_plugins:
                     self.instantiated_plugins[plugin].remove()
                 self.active_plugins.remove(plugin)
 
     def get_instantiated_plugin (self, plugin):
-        if self.instantiated_plugins.has_key(plugin):
+        if plugin in self.instantiated_plugins:
             return self.instantiated_plugins[plugin]
         else:
             debug('Instantiate %s from %s'%(plugin,
@@ -199,7 +199,7 @@ class MasterLoader:
             return self.instantiated_plugins[plugin]
             
     def register_pluggable (self, pluggable, klass):
-        if not self.pluggables_by_class.has_key(klass):
+        if klass not in self.pluggables_by_class:
             self.pluggables_by_class[klass] = []
         self.pluggables_by_class[klass].append(pluggable)
         for p in self.active_plugins:
@@ -275,11 +275,15 @@ class PluginSet:
             else:
                 return self._loaded
 
-    def __getattr__ (self, attr):
-        if attr == 'plugins': return self.get_plugins()
-        elif self.props.has_key(attr): return self.props[attr]
-        elif self.props.has_key(attr.capitalize()): return self.props[attr.capitalize()]
-        else: raise AttributeError
+    def __getattr__(self, attr):
+        if attr == 'plugins':
+            return self.get_plugins()
+        elif attr in self.props:
+            return self.props[attr]
+        elif attr.capitalize() in self.props:
+            return self.props[attr.capitalize()]
+        else:
+            raise AttributeError
 
     def get_plugins (self):
         return self.get_module().plugins
@@ -365,7 +369,7 @@ class Pluggable:
     def add_hook (self, type, name, hook):
         if type==PRE: hookdic = self.pre_hooks
         else: hookdic = self.post_hooks
-        if not hookdic.has_key(name):
+        if name not in hookdic:
             hookdic[name] = []
         hookdic[name].append(hook)
 

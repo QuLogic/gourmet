@@ -497,7 +497,7 @@ class RecEditorModule (UIModule, gobject.GObject, object):
                 if not val: val = 0
                 if not orig_value: orig_value = 0
             if orig_value==val:
-                if self.re.widgets_changed_since_save.has_key(prop):
+                if prop in self.re.widgets_changed_since_save:
                     del self.re.widgets_changed_since_save[prop]
             else:
                 self.re.widgets_changed_since_save[prop]=val  
@@ -510,7 +510,7 @@ class RecEditorModule (UIModule, gobject.GObject, object):
                 # We store each change in our dictionary... if the
                 # change has disappeared from the history list, then
                 # we can surmise it has been "undone"
-                if self.re.widgets_changed_since_save.has_key(widget):
+                if widget in self.re.widgets_changed_since_save:
                     old_change = self.re.widgets_changed_since_save[widget][-1]
                     if (old_change.is_undo != action.is_undo
                         and

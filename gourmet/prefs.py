@@ -32,7 +32,7 @@ class Prefs:
         """
         # note: we no longer set the key to the default value as a side effect,
         # since this behavior was, well, stupid. 5/7/05
-        if not self.config.has_key(key):
+        if key not in self.config:
             # Except for dictionaries, because, well, we rely on some
             # of the stupid behavior. If our preference is a
             # modifiable object -- i.e. a dictionary or a list -- it
@@ -43,8 +43,8 @@ class Prefs:
             return default
         else: return self.config[key]
 
-    def has_key (self, k):
-        return self.config.has_key(k)
+    def __contains__(self, k):
+        return k in self.config
 
     def __setitem__ (self, k, v):
         self.config[k]=v

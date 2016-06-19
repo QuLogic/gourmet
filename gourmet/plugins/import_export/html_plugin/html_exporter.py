@@ -282,7 +282,7 @@ class website_exporter (ExporterMultirec):
         self.indexf.close()
 
     def generate_link (self, id):
-        if self.added_dict.has_key(id):
+        if id in self.added_dict:
             return self.added_dict[id]
         else:
             rec = self.rd.get_rec(id)

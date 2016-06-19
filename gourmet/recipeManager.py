@@ -9,7 +9,7 @@ from gtk_extras import dialog_extras as de
 # Follow commandline db specification if given
 dbargs = {}
 
-if not dbargs.has_key('file'):
+if 'file' not in dbargs:
     dbargs['file']=os.path.join(gglobals.gourmetdir,'recipes.db')
 if args.db_url:
     print('We have a db_url and it is,', args.db_url)

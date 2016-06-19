@@ -41,7 +41,7 @@ class RecipeBrowserView (gtk.IconView):
                                                )
 
     def switch_model (self, path, val=None):
-        if not self.models.has_key(path):
+        if path not in self.models:
             self.build_model(path,val)
         self.set_model(self.models[path])
 

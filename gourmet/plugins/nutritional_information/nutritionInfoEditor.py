@@ -274,7 +274,7 @@ class NutStore (pageable_store.PageableViewStore):
                 s = ('LIKE','%'+txt.replace('%','%%')+'%')
                 extras_search = '.*'+re.escape(txt)+'.*'
             kwargs = self.search_kwargs.copy()
-            if kwargs.has_key(column):
+            if column in kwargs:
                 kwargs[column] = ('and',[kwargs[column],s])
             else:
                 kwargs[column]=s

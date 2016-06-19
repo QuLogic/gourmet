@@ -100,14 +100,15 @@ class ExportTest:
 
     def run_test (self, d):
 
-        if d.has_key('filename'):
+        if 'filename' in d:
             d['filename']=os.path.join(OUTPUT_DIRECTORY,
                                        d['filename'])
             self.test_import(d['filename'])
-        elif d.has_key('url'): self.test_web_import(d['url'])
+        elif 'url' in d:
+            self.test_web_import(d['url'])
         else:
             print('WTF: no test contained in ', d)
-        if d.has_key('test'):
+        if 'test' in d:
             self.do_test(d['test'])
 
     def do_test (self, test):
@@ -151,7 +152,7 @@ class ExportTest:
         self.mult_export_args['file']=new_file
         print('Testing export ', k, 'to', new_file, self.mult_export_args)
         exporters.exporter_dict[k]['mult_exporter'](self.mult_export_args.copy()).run()
-        if confirmation_tests.has_key(k):
+        if k in confirmation_tests:
             print('Running confirmation test on ', k)
             confirmation_tests[k](new_file) # Test!
         print('Done!')

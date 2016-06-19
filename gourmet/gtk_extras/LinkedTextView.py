@@ -44,7 +44,7 @@ class LinkedPangoBuffer (PangoBuffer):
             while m:
                 href = m.groups()[0]
                 body = m.groups()[1]
-                if self.markup_dict.has_key(body) and self.markup_dict[body]!=href:
+                if body in self.markup_dict and self.markup_dict[body] != href:
                     raise Exception("""Damn -- our not-so-clever implementation of <a href=""> parsing requires
                     that no two distinct links have the same text describing them!""")
                 self.markup_dict[body]=href
@@ -66,7 +66,7 @@ class LinkedPangoBuffer (PangoBuffer):
             if not match:
                 break
         text = unicode(text)
-        if match and self.markup_dict.has_key(text):
+        if match and text in self.markup_dict:
             new_tag = self.create_tag()
             new_tag.set_data('href',self.markup_dict[text])
             tags = list(tags)

@@ -262,8 +262,8 @@ class NutritionLabel (gtk.VBox, gobject.GObject):
                                      percent_label),
                     'unit_label': unit_label,
                     'unit':unit,
-                    'usda_rec_per_cal':(RECOMMENDED_INTAKE.has_key(name) and
-                                        RECOMMENDED_INTAKE[name]),
+                    'usda_rec_per_cal': (name in RECOMMENDED_INTAKE and
+                                         RECOMMENDED_INTAKE[name]),
                     'box':hb,
                     'type':typ,
                     })
@@ -525,7 +525,7 @@ if __name__ == '__main__':
                 return self.has_vapor
             if n=='_get_vapor':
                 return self._get_vapor_
-            if self.__attdict__.has_key(n):
+            if n in self.__attdict__:
                 return self.__attdict__[n]
             elif n=='kcal':
                 self.__attdict__[n]=self.carb*4+self.sugar*4+self.protein*4+self.famono*9+self.fasat*9

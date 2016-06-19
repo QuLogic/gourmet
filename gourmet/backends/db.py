@@ -133,7 +133,7 @@ class RecData (Pluggable):
         # hooks run after adding, modifying or deleting a recipe.
         # Each hook is handed the recipe, except for delete_hooks,
         # which is handed the ID (since the recipe has been deleted)
-        if RecData._singleton.has_key(file):
+        if file in RecData._singleton:
             raise RecData._singleton[file]
         else:
             RecData._singleton[file] = self
@@ -1069,7 +1069,7 @@ class RecData (Pluggable):
         recs_by_hash = {}
         for result in query.fetchall():
             rec_id = result[0]; hsh = result[1]
-            if not recs_by_hash.has_key(hsh):
+            if hsh not in recs_by_hash:
                 recs_by_hash[hsh] = []
             recs_by_hash[hsh].append(rec_id)
         results = recs_by_hash.values()
@@ -1104,7 +1104,7 @@ class RecData (Pluggable):
         recs_by_hash = {}
         for result in query.fetchall():
             rec_id = result[0]; rhsh = result[1]; ihsh = result[2]
-            if not recs_by_hash.has_key((rhsh,ihsh)):
+            if (rhsh, ihsh) not in recs_by_hash:
                 recs_by_hash[(rhsh,ihsh)] = []
             recs_by_hash[(rhsh,ihsh)].append(rec_id)
         results = recs_by_hash.values()
@@ -1128,7 +1128,7 @@ class RecData (Pluggable):
         """
         self.validate_recdic(dic)        
         debug('validating dictionary',3)
-        if dic.has_key('category'):
+        if 'category' in dic:
             newcats = dic['category'].split(', ')
             newcats = filter(lambda x: x, newcats) # Make sure our categories are not blank
             curcats = self.get_cats(rec)
@@ -1145,9 +1145,9 @@ class RecData (Pluggable):
         return retval
     
     def validate_recdic (self, recdic):
-        if not recdic.has_key('last_modified'):
+        if 'last_modified' not in recdic:
             recdic['last_modified']=time.time()
-        if recdic.has_key('image') and not recdic.has_key('thumb'):
+        if 'image' in recdic and 'thumb' not in recdic:
             # if we have an image but no thumbnail, we want to create the thumbnail.
             try:
                 img = ImageExtras.get_image_from_string(recdic['image'])
@@ -1248,11 +1248,11 @@ class RecData (Pluggable):
         method.
         """
         cats = []
-        if dic.has_key('category'):
+        if 'category' in dic:
             cats = dic['category'].split(', ')
             del dic['category']
-        if dic.has_key('servings'):
-            if dic.has_key('yields'):
+        if 'servings' in dic:
+            if 'yields' in dic:
                 del dic['yields']
             else:
                 try:
@@ -1262,7 +1262,8 @@ class RecData (Pluggable):
                     del dic['servings']
                 except:
                     del dic['servings']
-        if not dic.has_key('deleted'): dic['deleted']=False
+        if 'deleted' not in dic:
+            dic['deleted'] = False
         self.validate_recdic(dic)
         try:
             ret = self.do_add_rec(dic)
@@ -1284,7 +1285,7 @@ class RecData (Pluggable):
             return ret
 
     def add_ing_and_update_keydic (self, dic):
-        if dic.has_key('item') and dic.has_key('ingkey') and dic['item'] and dic['ingkey']:
+        if 'item' in dic and 'ingkey' in dic and dic['item'] and dic['ingkey']:
             self.add_ing_to_keydic(dic['item'],dic['ingkey'])
         return self.add_ing(dic)
     
@@ -1377,9 +1378,9 @@ class RecData (Pluggable):
     def do_add_rec (self, rdict):
         """Add a recipe based on a dictionary of properties and values."""
         self.changed=True
-        if not rdict.has_key('deleted'):
+        if 'deleted' not in rdict:
             rdict['deleted']=0
-        if rdict.has_key('id'):
+        if 'id' in rdict:
             # If our dictionary has an id, then we assume we are a
             # reserved ID
             if rdict['id'] in self.new_ids:
@@ -1397,7 +1398,8 @@ class RecData (Pluggable):
 
     def validate_ingdic (self,dic):
         """Do any necessary validation and modification of ingredient dictionaries."""
-        if not dic.has_key('deleted'): dic['deleted']=False
+        if 'deleted' not in dic:
+            dic['deleted'] = False
         self._force_unicode(dic)
 
     def _force_unicode (self, dic):
@@ -1537,7 +1539,7 @@ class RecData (Pluggable):
                 print('Bad: ingredient without position', i)
                 i.position=defaultn
                 defaultn += 1
-            if groups.has_key(group): 
+            if group in groups:
                 groups[group].append(i)
                 # the position of the group is the smallest position of its members
                 # in other words, positions pay no attention to groups really.
@@ -1902,7 +1904,7 @@ class RecipeManager (RecData):
                     d['amount']=convert.frac_to_float(a.strip())
             if u:
                 conv = convert.get_converter()
-                if conv and conv.unit_dict.has_key(u.strip()):
+                if conv and u.strip() in conv.unit_dict:
                     # Don't convert units to our units!
                     d['unit']=u.strip()
                 else:
@@ -1976,20 +1978,20 @@ class DatabaseConverter(convert.Converter):
     def create_conv_table (self):
         self.conv_table = dbDic('ckey','value',self.db.convtable_table, self.db)
         for k,v in defaults.CONVERTER_TABLE.items():
-            if not self.conv_table.has_key(k):
+            if k not in self.conv_table:
                 self.conv_table[k]=v
 
     def create_density_table (self):
         self.density_table = dbDic('dkey','value',
                                    self.db.density_table,self.db)
         for k,v in defaults.DENSITY_TABLE.items():
-            if not self.density_table.has_key(k):
+            if k not in self.density_table:
                 self.density_table[k]=v
 
     def create_cross_unit_table (self):
         self.cross_unit_table=dbDic('cukey','value',self.db.crossunitdict_table,self.db)
         for k,v in defaults.CROSS_UNIT_TABLE:
-            if not self.cross_unit_table.has_key(k):
+            if k not in self.cross_unit_table:
                 self.cross_unit_table[k]=v
 
     def create_unit_dict (self):
@@ -2011,7 +2013,7 @@ class dbDic:
         self.db = db
         self.just_got = {}
 
-    def has_key (self, k):
+    def __contains__(self, k):
         try:
             self.just_got = {k:self.__getitem__(k)}
             return True
@@ -2033,7 +2035,8 @@ class dbDic:
         return v
 
     def __getitem__ (self, k):
-        if self.just_got.has_key(k): return self.just_got[k]
+        if k in self.just_got:
+            return self.just_got[k]
         v = getattr(self.db.fetch_one(self.vw,**{self.kp:k}),self.vp)
         return v
     

@@ -67,12 +67,12 @@ class ShopEditor:
 
     def sort_model_fun (model, iter1, iter2, data):
         c1 = model.get_value(iter1, self.CAT_COL)
-        if self.rg.sl.sh.catorder_dic.has_key(c1):
+        if c1 in self.rg.sl.sh.catorder_dic:
             c1_order = self.rg.sl.sh.catorder_dic[c1]
         else:
             c1_order = None
         c2 = model.get_value(iter2, self.CAT_COL)
-        if self.rg.sl.sh.catorder_dic.has_key(c1):
+        if c1 in self.rg.sl.sh.catorder_dic:
             c2_order = self.rg.sl.sh.catorder_dic[c2]
         else:
             c2_order = None
@@ -102,7 +102,7 @@ class ShopEditor:
             # then we need to make sure we show key header rows
             # whose items include an item w/ the proper title...
             cat = mod.get_value(iter,self.CAT_COL)
-            if self.cat_to_key.has_key(cat):
+            if cat in self.cat_to_key:
                 for itm in self.cat_to_key[cat]:
                     if self.use_regexp:
                         if re.search(self.search_string, itm): return True

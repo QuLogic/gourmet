@@ -25,7 +25,7 @@ class Shopper:
         self.init_pantry()
         self.mypantry = {}
         for a,u,k in inglist:
-            if self.pantry.has_key(k) and self.pantry[k]:
+            if k in self.pantry and self.pantry[k]:
                 # print("%s is in pantry" % (k, ))
                 dic=self.mypantry
             else:
@@ -36,7 +36,7 @@ class Shopper:
                 if not isinstance(a, tuple):
                     debug("Warning, can't make sense of amount %s; reading as None"%a,0)
                     a = None
-            if dic.has_key(k):
+            if k in dic:
                 dic[k].append([a,u])
             else:
                 dic[k]=[[a,u]]
@@ -155,11 +155,11 @@ class Shopper:
         if not dic:
             pass
         for i,a in dic.items():
-            if self.orgdic.has_key(i) and self.orgdic[i]:
+            if i in self.orgdic and self.orgdic[i]:
                 c = self.orgdic[i]
             else:
                 c = _("Unknown")
-            if cats.has_key(c):
+            if c in cats:
                 cats[c][i]=a
             else:
                 cats[c]={i:a}
@@ -183,7 +183,7 @@ class Shopper:
         if not cata and not catb: return 0
         elif not cata: return 1
         elif not catb: return -1
-        if self.catorder_dic.has_key(cata) and self.catorder_dic.has_key(catb):
+        if cata in self.catorder_dic and catb in self.catorder_dic:
             # if both categories have known positions, we use them to compare
             cata = self.catorder_dic[cata]
             catb = self.catorder_dic[catb]
@@ -199,7 +199,7 @@ class Shopper:
         """Put two ingredients in order"""
         inga = inga[0]
         ingb = ingb[0]
-        if False and self.ingorder_dic.has_key(inga) and self.ingorder_dic.has_key(ingb):
+        if False and inga in self.ingorder_dic and ingb in self.ingorder_dic:
             # if both ings have known positions, we use them to compare
             inga = self.ingorder_dic[inga]
             ingb = self.ingorder_dic[ingb]
@@ -308,9 +308,8 @@ class ShoppingList:
                     continue
                 if isinstance(include_dic, dict):
                     # Then we have to look at the dictionary itself...
-                    if ((not include_dic.has_key(i.ingkey))
-                        or
-                        not include_dic[i.ingkey]):
+                    if (i.ingkey not in include_dic or
+                            not include_dic[i.ingkey]):
                         # we ignore our ingredient (don't add it)
                         continue
             if self.rd.get_amount(i):
@@ -336,7 +335,7 @@ class ShoppingList:
                     amt = self.rd.get_amount_as_float(i)
                     if not amt: amount=amt
                     refmult=mult*amt
-                    if not include_dic.has_key(subrec.id):
+                    if subrec.id not in include_dic:
                         d = self.getOptionalDic(self.rd.get_ings(subrec),
                                                 refmult,
                                                 self.prefs,

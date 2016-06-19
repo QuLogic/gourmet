@@ -160,7 +160,7 @@ class KeyManager:
             if exact:
                 for o in exact:
                     k = o.ingkey
-                    if not retvals.has_key(k):
+                    if k not in retvals:
                         retvals[k]=0
                     retvals[k]+=(float(o.count)/len(exact))*2
         # Part II -- look up individual words
@@ -184,7 +184,7 @@ class KeyManager:
             total_count = sum([m.count for m in srch])
             for m in srch:
                 ik = m.ingkey
-                if not retvals.has_key(ik):
+                if ik not in retvals:
                     retvals[ik]=0
                 # We have a lovely ratio.
                 #
@@ -269,11 +269,12 @@ class KeyDictionary:
         self.rm = rm
         self.default = defaults.keydic
 
-    def has_key (self, k):
-        debug('has_key testing for %s'%k,1)
-        if self.rm.fetch_one(self.rm.ingredients_table,item=k): return True
-        elif self.default.has_key(k): return True
-        else: return False
+    def __contains__(self, k):
+        debug('__contains__ testing for %s' % (k, ), 1)
+        if self.rm.fetch_one(self.rm.ingredients_table, item=k):
+            return True
+        else:
+            return k in self.default
 
     def srt_by_2nd (self, i1, i2):
         """Sort by the reverse order of the second item in each of i1

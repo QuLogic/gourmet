@@ -103,15 +103,16 @@ class PangoBuffer (gtk.TextBuffer):
             if fontattrs:
                 attrs.extend(fontattrs)
             if fontdesc and fontdesc!='Normal':
-                if not self.tags.has_key(font.to_string()):                    
+                if font.to_string() not in self.tags:
                     tag=self.create_tag()
                     tag.set_property('font-desc',font)
-                    if not self.tagdict.has_key(tag): self.tagdict[tag]={}
+                    if tag not in self.tagdict:
+                        self.tagdict[tag] = {}
                     self.tagdict[tag]['font_desc']=font.to_string()
                     self.tags[font.to_string()]=tag
                 tags.append(self.tags[font.to_string()])
         if lang:
-            if not self.tags.has_key(lang):
+            if lang not in self.tags:
                 tag = self.create_tag()
                 tag.set_property('language',lang)
                 self.tags[lang]=tag
@@ -121,7 +122,7 @@ class PangoBuffer (gtk.TextBuffer):
                 if a.type == pango.ATTR_FOREGROUND:
                     gdkcolor = self.pango_color_to_gdk(a.color)
                     key = 'foreground%s'%self.color_to_hex(gdkcolor)
-                    if not self.tags.has_key(key):
+                    if key not in self.tags:
                         self.tags[key]=self.create_tag()
                         self.tags[key].set_property('foreground-gdk',gdkcolor)
                         self.tagdict[self.tags[key]]={}
@@ -130,27 +131,27 @@ class PangoBuffer (gtk.TextBuffer):
                 if a.type == pango.ATTR_BACKGROUND:
                     gdkcolor = self.pango_color_to_gdk(a.color)
                     key = 'background%s'%self.color_to_hex(gdkcolor)
-                    if not self.tags.has_key(key):
+                    if key not in self.tags:
                         self.tags[key]=self.create_tag()
                         self.tags[key].set_property('background-gdk',gdkcolor)
                         self.tagdict[self.tags[key]]={}
                         self.tagdict[self.tags[key]]['background']="#%s"%self.color_to_hex(gdkcolor)
                     tags.append(self.tags[key])
-                if self.pango_translation_properties.has_key(a.type):
+                if a.type in self.pango_translation_properties:
                     prop=self.pango_translation_properties[a.type]
                     # print('setting property %s of %s (type: %s)' % (
                     #     prop, a, a.type))
                     val=getattr(a,'value')
                     #tag.set_property(prop,val)
                     mval = val
-                    if self.attval_to_markup.has_key(prop):
+                    if prop in self.attval_to_markup:
                         # print('converting ', prop, ' in ', val)
-                        if self.attval_to_markup[prop].has_key(val):
+                        if val in self.attval_to_markup[prop]:
                             mval = self.attval_to_markup[prop][val]
                         else:
                             debug("hmmm, didn't know what to do with value %s"%val,0)
                     key="%s%s"%(prop,val)
-                    if not self.tags.has_key(key):
+                    if key not in self.tags:
                         self.tags[key]=self.create_tag()
                         self.tags[key].set_property(prop,val)
                         self.tagdict[self.tags[key]]={}
@@ -165,7 +166,7 @@ class PangoBuffer (gtk.TextBuffer):
         for pos in range(self.get_char_count()):
             iter=self.get_iter_at_offset(pos)
             for tag in iter.get_tags():
-                if tagdict.has_key(tag):
+                if tag in tagdict:
                     if tagdict[tag][-1][1] == pos - 1:
                         tagdict[tag][-1] = (tagdict[tag][-1][0],pos)
                     else:
@@ -181,12 +182,15 @@ class PangoBuffer (gtk.TextBuffer):
         txt = unicode(gtk.TextBuffer.get_text(self,start,end))
         cuts = {}
         for k,v in tagdict.items():
-            if not self.tagdict.has_key(k): continue
+            if k not in self.tagdict:
+                continue
             stag,etag = self.tag_to_markup(k)
             for st,e in v:
-                if cuts.has_key(st): cuts[st].append(stag) #add start tags second
+                if st in cuts:
+                    cuts[st].append(stag)  # add start tags second
                 else: cuts[st]=[stag]
-                if cuts.has_key(e+1): cuts[e+1]=[etag]+cuts[e+1] #add end tags first
+                if e + 1 in cuts:
+                    cuts[e + 1] = [etag] + cuts[e + 1]  # add end tags first
                 else: cuts[e+1]=[etag]
         last_pos = 0
         outbuff = ""
@@ -214,7 +218,7 @@ class PangoBuffer (gtk.TextBuffer):
         nicks = font.get_set_fields().value_nicks
         attrs = []
         for n in nicks:
-            if self.desc_to_attr_table.has_key(n):
+            if n in self.desc_to_attr_table:
                 Attr,norm = self.desc_to_attr_table[n]
                 # create an attribute with our current value
                 attrs.append(Attr(getattr(font,'get_%s'%n)()))

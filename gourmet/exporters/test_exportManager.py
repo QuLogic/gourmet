@@ -71,11 +71,11 @@ class SampleRecipeSetterUpper:
         recid = r.id
         print('added rec', r.id)
         recdic['recipe_id'] = r.id
-        if recdic.has_key('categories'):
+        if 'categories' in recdic:
             for c in recdic['categories']:
                 print('add categories', c)
                 self.db.do_add_cat({'recipe_id':recid,'category':c})
-        if recdic.has_key('ingredients'):
+        if 'ingredients' in recdic:
             print('Add ingredients...')
             for i in recdic['ingredients']:
                 i['recipe_id'] = recid; i['deleted']=False

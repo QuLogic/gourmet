@@ -803,7 +803,7 @@ class ShopGui (ShoppingList, plugin_loader.Pluggable, IngredientAndPantryList):
 	last_val = -100
 	while iter:
 	    cat = mod.get_value(iter,0)
-	    if self.sh.catorder_dic.has_key(cat):
+	    if cat in self.sh.catorder_dic:
 		val = self.sh.catorder_dic[cat]
 	    else:
 		val = 0

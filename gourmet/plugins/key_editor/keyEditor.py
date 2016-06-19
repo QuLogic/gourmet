@@ -356,13 +356,20 @@ class KeyEditor:
                   "possible")
             return
         mod,rows = self.treeview.get_selection().get_selected_rows()
-        if not de.getBoolean(
-        label=_("Change all selected rows?"),
-        sublabel=(_('This action will not be undoable. Are you that for all %s selected rows, you want to set the following values:')%len(rows)
-        + (newdic.has_key('ingkey') and _('\nKey to %s')%newdic['ingkey'] or '')
-        + (newdic.has_key('item') and _('\nItem to %s')%newdic['item'] or '')
-        + (newdic.has_key('unit') and _('\nUnit to %s')%newdic['unit'] or '')
-        + (newdic.has_key('amount') and _('\nAmount to %s')%newdic['amount'] or ''))):
+        label = _("Change all selected rows?")
+        ingkey = ('ingkey' in newdic and
+                  _('\nKey to %s') % (newdic['ingkey'], ) or '')
+        item = ('item' in newdic and
+                _('\nItem to %s') % (newdic['item'], ) or '')
+        unit = ('unit' in newdic and
+                _('\nUnit to %s') % (newdic['unit'], ) or '')
+        amount = ('amount' in newdic and
+                  _('\nAmount to %s') % (newdic['amount'], ) or '')
+        sublabel = (_('This action will not be undoable. Are you that for all '
+                      '%s selected rows, you want to set the following '
+                      'values:') % (len(rows), ) +
+                    ingkey + item + unit + amount)
+        if not de.getBoolean(label=label, sublabel=sublabel):
             return
         # Now actually apply our lovely new logic...
         changed_iters = True
@@ -389,7 +396,7 @@ class KeyEditor:
                     curdic,
                     newdic,
                     )
-                if curdic.has_key('ingkey') and newdic.has_key('ingkey'):
+                if 'ingkey' in curdic and 'ingkey' in newdic:
                     self.rd.delete_by_criteria(
                         self.rd.keylookup_table,
                         {'ingkey':curdic['ingkey']}
@@ -445,13 +452,13 @@ class KeyEditor:
     def update_iter (self, itr, newdic):
         """Update iter and its children based on values in newdic"""
         field = self.treeModel.get_value(itr,self.FIELD_COL)
-        if newdic.has_key('item') and field==self.treeModel.ITEM:
+        if 'item' in newdic and field == self.treeModel.ITEM:
             self.treeModel.set_value(itr,self.VALUE_COL,newdic['item'])
-        elif newdic.has_key('ingkey') and field==self.treeModel.KEY:
+        elif 'ingkey' in newdic and field == self.treeModel.KEY:
             self.treeModel.set_value(itr,self.VALUE_COL,newdic['ingkey'])
-        elif newdic.has_key('unit') and field==self.treeModel.UNIT:
+        elif 'unit' in newdic and field == self.treeModel.UNIT:
             self.treeModel.set_value(itr,self.VALUE_COL,newdic['unit'])
-        elif newdic.has_key('amount') and field==self.treeModel.AMOUNT:
+        elif 'amount' in newdic and field == self.treeModel.AMOUNT:
             self.treeModel.set_value(itr,self.VALUE_COL,newdic['amount'])
         c = self.treeModel.iter_children(itr)
         while c:

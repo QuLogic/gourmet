@@ -66,7 +66,8 @@ class TimeAction:
                 line = ""
             if not args.debug_file or debug_file.search(finame):
                 print("DEBUG: %s TOOK %s SECONDS" % (self.name, t))
-                if not timers.has_key(self.name): timers[self.name]=[t]
+                if self.name not in timers:
+                    timers[self.name] = [t]
                 else: timers[self.name].append(t)
 
 

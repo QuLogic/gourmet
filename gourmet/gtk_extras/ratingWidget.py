@@ -75,7 +75,7 @@ class StarGenerator:
 
         """Return a pixbuf with an image representing n/max stars"""
 
-        if self.pixbufs.has_key((n,max)):
+        if (n, max) in self.pixbufs:
             return self.pixbufs[(n,max)]
         else:
             img = self.build_image(n,max)
@@ -93,10 +93,8 @@ class StarGenerator:
         return self.build_image(*args,**kwargs)
 
     def get_file (self, n, max=10, ext='.jpg'):
-        if (self.image_files.has_key((n,max,ext))
-            and
-            os.path.exists(self.image_files[(n,max,ext)])
-            ):
+        if ((n, max, ext) in self.image_files and
+                os.path.exists(self.image_files[(n, max, ext)])):
             return self.image_files[(n,max,ext)]
         fi = tempfile.mktemp("%s_of_%s.%s"%(n,max,ext))
         i = self.get_image(n,max)
@@ -250,7 +248,7 @@ class StarButton (gtk.Button):
 
     def set_value (self, value):
         self.image.set_value(value)
-        if self._custom_handlers_.has_key('changed'):
+        if 'changed' in self._custom_handlers_:
             for h in self._custom_handlers_['changed']:
                 if h(self): break
         return True
@@ -261,7 +259,7 @@ class StarButton (gtk.Button):
     def connect (self, name, handler):
         """We do something very very bad."""
         if name in self.__custom_handler_names__:
-            if self._custom_handlers_.has_key(name):
+            if name in self._custom_handlers_:
                 self._custom_handlers_[name].append(handler)
             else:
                 self._custom_handlers_[name]=[handler]

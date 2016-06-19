@@ -22,7 +22,7 @@ class rec_to_xml (exporter.exporter):
             self.my_title=xml.sax.saxutils.escape(text)
         else:
             name = NAME_TO_ATTR[label]
-            if self.attdics.has_key(name):
+            if name in self.attdics:
                 text = self.attdics[name][text]
             self.out.write("\n %s=%s"%(name, quoteattr(text)))
 
@@ -112,7 +112,7 @@ class recipe_table_to_xml (exporter.ExporterMultirec):
         cnt = 1
         for r in self.rd.recipe_table:
             itm = getattr(r,attr)
-            if not dic.has_key(itm):
+            if itm not in dic:
                 dic[itm]="%s%s"%(attr,cnt)
                 cnt += 1
         return dic

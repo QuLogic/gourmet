@@ -702,7 +702,7 @@ class NutritionInfoDruid (gobject.GObject):
         base_convert = self.nd.conv.converter('g',to_unit)
         if not base_convert:
             self.densities,self.extra_units = self.nd.get_conversions(self.ingkey)
-            if self.extra_units.has_key(to_unit):
+            if to_unit in self.extra_units:
                 base_convert = 1/self.extra_units[to_unit]
             else:
                 # this is a density, we hope...
@@ -711,7 +711,7 @@ class NutritionInfoDruid (gobject.GObject):
                     describer = describer[0:-1]
                     density = self.densities[describer]
                 else:
-                    if not self.densities.has_key(None):
+                    if None not in self.densities:
                         raise RuntimeError("Unable to make sense of conversion from %s %s"%(to_unit,self.ingkey))
                     density = self.densities[None]
                 base_convert = self.nd.conv.converter('g',to_unit,density=density)
