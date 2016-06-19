@@ -318,7 +318,7 @@ class QuickTree (gtk.ScrolledWindow):
             self.tv.append_column(col)
 
     def setup_model (self):
-        self.model = apply(gtk.ListStore,[str]*self.cols)
+        self.model = gtk.ListStore(*([str] * self.cols))
         for row in self.rows:
             itr = self.model.append()
             while len(row) > self.cols:

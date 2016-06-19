@@ -58,7 +58,7 @@ class WindowSaver (WidgetSaver):
                 #if os.name=='nt' and p=='position' and self.dictionary['position'][1]<20:
                 #    print('FIDDLING WITH WINDOW FOR WINDOWS')
                 #    #self.dictionary[p] = self.dictionary[p][0],20
-                apply(f,self.dictionary[p])
+                f(*self.dictionary[p])
         
     def save_properties (self, *args):
         if os.name=='nt': return

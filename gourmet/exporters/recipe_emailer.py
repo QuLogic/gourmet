@@ -125,7 +125,7 @@ class EmailerDialog (RecipeEmailer):
         self.option_list = []
         self.email_options = {}
         for k,v in self.options.items():
-            self.email_options[v[0]]=apply(self.prefs.get,v)
+            self.email_options[v[0]] = self.prefs.get(*v)
             self.option_list.append([k,self.email_options[v[0]]])
 
     def dont_ask_cb (self, widget, *args):
