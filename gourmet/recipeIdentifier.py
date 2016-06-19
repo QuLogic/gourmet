@@ -54,8 +54,7 @@ def standardize_ingredient (ing_object, converter):
     return istring.lower()
 
 def get_ingredient_hash (ings, conv):
-    ings = [standardize_ingredient(i,conv) for i in ings]
-    ings.sort()
+    ings = sorted(standardize_ingredient(i, conv) for i in ings)
     ings = '\n'.join(ings)
     m = hashlib.md5(ings)
     # print('Hash', ings, m.hexdigest())

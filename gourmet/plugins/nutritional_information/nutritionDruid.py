@@ -413,8 +413,7 @@ class NutritionInfoDruid (gobject.GObject):
             else:
                 density_texts.append('%s: %.2f'%(k,v))
         self.infoDensityLabel.set_text('\n'.join(density_texts) or 'None')
-        eutexts = ['%s: %s g'%(k,v) for k,v in extra_units.items() ]
-        eutexts.sort()
+        eutexts = sorted('%s: %s g' % (k, v) for k, v in extra_units.items())
         extra_units_text = '\n'.join(eutexts)
         self.infoOtherEquivalentsLabel.set_text(
             extra_units_text or 'None'

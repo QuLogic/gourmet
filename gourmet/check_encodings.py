@@ -168,8 +168,7 @@ class EncodingDialog (de.OptionDialog):
         debug('changed text to encoding %s'%self.ret,0)        
         
     def move_to_difference (self, forward=True):        
-        dkeys = self.diff_lines.keys()
-        dkeys.sort()
+        dkeys = sorted(self.diff_lines.keys())
         if forward:
             self.current_error += 1
         else:

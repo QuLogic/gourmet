@@ -1685,8 +1685,7 @@ class RecData (Pluggable):
             return amt
         else:
             # otherwise we do our magic
-            amt=list(amt)
-            amt.sort() # make sure these are in order
+            amt = sorted(amt)
             low,high=amt
             if mode==self.AMT_MODE_AVERAGE: return (low+high)/2.0
             elif mode==self.AMT_MODE_LOW: return low

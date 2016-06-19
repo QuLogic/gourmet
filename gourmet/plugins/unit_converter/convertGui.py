@@ -50,8 +50,7 @@ class ConvGui:
             combobox.add_attribute(cell, 'text', 1)
             setup_typeahead(combobox)
         #self.itemComboBox.append_text('None')
-        ikeys = self.conv.density_table.keys()
-        ikeys.sort()
+        ikeys = sorted(self.conv.density_table.keys())
         for itm in ikeys:
             self.itemComboBox.append_text(itm)
         if len(self.conv.density_table.keys()) > 8:

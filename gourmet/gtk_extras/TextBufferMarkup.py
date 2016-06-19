@@ -190,8 +190,7 @@ class PangoBuffer (gtk.TextBuffer):
                 else: cuts[e+1]=[etag]
         last_pos = 0
         outbuff = ""
-        cut_indices = cuts.keys()
-        cut_indices.sort()        
+        cut_indices = sorted(cuts.keys())
         soffset = start.get_offset()
         eoffset = end.get_offset()
         cut_indices = filter(lambda i: eoffset >= i >= soffset, cut_indices)

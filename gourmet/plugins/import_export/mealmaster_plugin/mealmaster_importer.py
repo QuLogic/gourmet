@@ -517,8 +517,7 @@ def find_fields (strings, char=" "):
     if not cols: return []
     cols.reverse()
     fields = []
-    lens = map(len,strings)
-    lens.sort()
+    lens = sorted(map(len, strings))
     end = lens[-1]
     last_col = end
     for col in cols:
