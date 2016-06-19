@@ -145,7 +145,7 @@ def launch_url (url, ext=""):
         os.startfile(url)
     elif os.name == 'posix':
         try:
-            gtk.show_uri(gtk.gdk.Screen(),url,0L)
+            gtk.show_uri(gtk.gdk.Screen(), url, 0)
         except gobject.GError, err:
             # print(dir(err))
             label = _('Unable to open URL')

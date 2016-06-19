@@ -140,7 +140,7 @@ class recipe_table_to_xml (exporter.ExporterMultirec, XmlExporter):
         picdirname = os.path.join(dirname,'images')
         if os.path.isdir(picdirname):
             shutil.rmtree(picdirname)
-        os.mkdir(picdirname, 0777 );
+        os.mkdir(picdirname, 0o777)
         
         self.create_xmldoc()
         exporter.ExporterMultirec.__init__(

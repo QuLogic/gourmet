@@ -56,7 +56,7 @@ def check_for_thumbnail (uri, type="large",reporthook=None):
         return create_thumbnail(fn,name,uri,type)
     # make sure permissions are correct
     # since previous Gourmet's may have mucked them up :)
-    os.chmod(name,0700)
+    os.chmod(name, 0o700)
     return name
 
 def create_thumbnail (path, thumbpath, uri, type="large"):
@@ -93,6 +93,6 @@ def create_thumbnail (path, thumbpath, uri, type="large"):
         pnginfo.add_text(k,v)
     im.save(thumbpath, pnginfo=pnginfo)
     # we must make all thumbnails permissions 700
-    os.chmod(thumbpath,0700)
+    os.chmod(thumbpath, 0o700)
     return thumbpath
 
