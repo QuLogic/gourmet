@@ -1004,7 +1004,7 @@ if __name__ == '__main__' and False:
                             'Add':self.adder,
                             'Adjust':self.adjuster,
                             'Quit':self.quit}
-            while 1:
+            while True:
                 self.offer_options()
             
         def offer_options (self):

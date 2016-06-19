@@ -417,7 +417,7 @@ if __name__ == '__main__':
     class TestInterminable (SuspendableThread):
 
         def do_run (self):
-            while 1:
+            while True:
                 time.sleep(0.1)
                 self.emit('progress',-1,'Working interminably')
                 self.check_for_sleep()
